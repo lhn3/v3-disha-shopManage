@@ -1,5 +1,5 @@
 <template>
-  notfound
+  home
 </template>
 
 <script>

@@ -4,7 +4,6 @@
 </script>
 
 <template>
-  <router-link to="/123">not</router-link>
   <router-view></router-view>
 </template>
 
