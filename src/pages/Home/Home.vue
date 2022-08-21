@@ -1,6 +1,15 @@
 <template>
-  home
-  <el-button type="warning" @click="logout">退出登录</el-button>
+<!--  <el-button type="warning" @click="logout">退出登录</el-button>-->
+  <el-container>
+    <el-header>头部</el-header>
+    <el-container>
+      <el-aside>侧边</el-aside>
+      <el-main>
+        <div>面包屑</div>
+        <router-view />
+      </el-main>
+    </el-container>
+    </el-container>
 </template>
 
 <script setup>

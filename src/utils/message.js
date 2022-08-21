@@ -1,5 +1,12 @@
 import {ElMessageBox} from "element-plus";
 
+/**
+ * 全局进度条使用
+ * import nprogress from 'nprogress'
+ * nprogress.start()
+ * nprogress.done()
+ */
+
 export function messageBox(info, type = 'warning') {
   return new Promise(resolve => {
     ElMessageBox.confirm(
