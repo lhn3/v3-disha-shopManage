@@ -50,7 +50,7 @@ class myRequest {
       (err) => {
         //删除加载动画
         this.loading ? this.loading.close() : ""
-        err.response.data.code = 0
+        // err.response.data.code = 0
         return err.response.data
       }
     )

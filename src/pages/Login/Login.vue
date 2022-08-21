@@ -35,8 +35,8 @@ const formRef = ref()
 const router = useRouter()
 const store = useStore()
 const formInline = reactive({
-  username: '',
-  password: '',
+  username: 'admin',
+  password: 'admin',
   rules: {
     username:{ required: true, message: '请输入用户名', trigger: 'blur' },
     password:{ required: true, message: '请输入密码', trigger: 'blur' }
@@ -58,7 +58,6 @@ const onSubmit = () => {
 
     // 获取用户信息并保存到vuex
     let getUserInfoRes = await getUserInfo()
-    console.log(getUserInfoRes)
     if (getUserInfoRes.code !== 200){
       return ElMessage.error(getUserInfoRes.msg + '!')
     }

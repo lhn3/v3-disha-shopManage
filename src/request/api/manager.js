@@ -14,3 +14,10 @@ export const getUserInfo = () => {
     url: '/admin/getinfo'
   })
 }
+
+//退出登录
+export const loginOut = () => {
+  return myAxios.post({
+    url: '/admin/logout'
+  })
+}
