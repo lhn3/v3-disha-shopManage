@@ -27,12 +27,13 @@
 import { reactive, ref } from 'vue'
 import {ElMessage} from 'element-plus'
 import {User,Lock} from '@element-plus/icons-vue'
-import {login} from "@/request/api/manager";
-import localCache from '@/utils/cache'
+import {login,getUserInfo} from "@/request/api/manager";
 import {useRouter} from "vue-router";
+import {useStore} from 'vuex'
 
 const formRef = ref()
 const router = useRouter()
+const store = useStore()
 const formInline = reactive({
   username: '',
   password: '',
@@ -47,15 +48,24 @@ const onSubmit = () => {
     if (!isValid) {
       return
     }
-    let res = await login({username:formInline.username,password:formInline.password})
-    if (res.code !== 200) {
-      return ElMessage.error(res.response.data.msg + '!')
+    //登录
+    let loginRes = await login({username:formInline.username,password:formInline.password})
+    if (loginRes.code !== 200) {
+      return ElMessage.error(loginRes.msg + '!')
     }
+    //保存token到vuex
+    store.dispatch('manager/tokenAction',loginRes.data.token)
+
+    // 获取用户信息并保存到vuex
+    let getUserInfoRes = await getUserInfo()
+    console.log(getUserInfoRes)
+    if (getUserInfoRes.code !== 200){
+      return ElMessage.error(getUserInfoRes.msg + '!')
+    }
+    //保存用户信息
+    store.dispatch('manager/userInfoAction', getUserInfoRes.data)
+
     ElMessage.success('登陆成功~')
-    //保存token到cookies
-
-    // 获取用户信息存储本地和vuex
-
     // 跳转路由到首页
     router.replace('/')
   })
