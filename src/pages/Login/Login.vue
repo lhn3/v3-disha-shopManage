@@ -12,10 +12,10 @@
       <div class="mt-3 mb-3 text-gray-300">——— 账号密码登录 ———</div>
       <el-form ref="formRef"  :model="formInline" :rules="formInline.rules" class="w-[250px]">
         <el-form-item prop="username">
-          <el-input v-model="formInline.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
+          <el-input v-model.trim="formInline.username" placeholder="请输入用户名" :prefix-icon="User" clearable />
         </el-form-item>
         <el-form-item prop="password">
-          <el-input type="password" v-model="formInline.password" placeholder="请输入密码" :prefix-icon="Lock" clearable />
+          <el-input type="password" v-model.trim="formInline.password" placeholder="请输入密码" :prefix-icon="Lock" clearable />
         </el-form-item>
         <el-button class="w-[250px]" color="#6366f1" round type="primary" @click="onSubmit">登录</el-button>
       </el-form>
@@ -28,8 +28,11 @@ import { reactive, ref } from 'vue'
 import {ElMessage} from 'element-plus'
 import {User,Lock} from '@element-plus/icons-vue'
 import {login} from "@/request/api/manager";
+import localCache from '@/utils/cache'
+import {useRouter} from "vue-router";
 
 const formRef = ref()
+const router = useRouter()
 const formInline = reactive({
   username: '',
   password: '',
@@ -42,11 +45,19 @@ const formInline = reactive({
 const onSubmit = () => {
   formRef.value.validate(async (isValid) => {
     if (!isValid) {
-      // ElMessage.error('请输入用户名和密码！')
       return
     }
     let res = await login({username:formInline.username,password:formInline.password})
-    console.log(res)
+    if (res.code !== 200) {
+      return ElMessage.error(res.response.data.msg + '!')
+    }
+    ElMessage.success('登陆成功~')
+    //保存token到cookies
+
+    // 获取用户信息存储本地和vuex
+
+    // 跳转路由到首页
+    router.replace('/')
   })
 }
 </script>

@@ -2,6 +2,7 @@ import axios from 'axios'
 import { ElLoading } from 'element-plus/lib'
 import { BASE_URL, TIME_OUT } from './config'
 import localCache from '@/utils/cache'
+import {ElMessage} from 'element-plus'
 
 //创建封装axios类
 class myRequest {
@@ -42,7 +43,10 @@ class myRequest {
         console.log('全部响应拦截，成功')
         //删除加载动画
         this.loading ? this.loading.close() : ""
-        return res.data
+        if (res.status == 200) {
+          res.data.code = 200
+          return res.data
+        }
       },
       (err) => {
         //删除加载动画
@@ -98,7 +102,7 @@ const myAxios = new myRequest({
   interceptors: {
     requestInterceptor(config) {
       //携带token发送请求
-      let token = localCache.getCache('token')
+      let token = localCache.getCache('disha-token')
       if (token) {
         config.headers.Authorization = `Bearer ${token}`
       }
