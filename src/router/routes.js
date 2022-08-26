@@ -6,7 +6,7 @@ import About from "@/pages/About/About.vue";
 export const routes = [
     {
         path: '/',
-        redirect: { name: 'home' }
+        redirect: { name: 'login' }
     },
     {
         path: '/home',
