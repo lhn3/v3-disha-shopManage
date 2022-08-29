@@ -15,6 +15,14 @@ export const getUserInfo = () => {
   })
 }
 
+//修改密码
+export const changePassword = (data) => {
+  return myAxios.post({
+    url: '/admin/updatepassword',
+    data
+  })
+}
+
 //退出登录
 export const loginOut = () => {
   return myAxios.post({

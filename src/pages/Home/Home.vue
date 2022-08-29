@@ -1,6 +1,6 @@
 <template>
   <el-container>
-    <el-header class="header">
+    <el-header>
       <Header />
     </el-header>
     <el-container>
@@ -22,9 +22,6 @@ import Menu from '@/components/Menu.vue'
 </script>
 
 <style scoped lang="less">
-.header{
-  background-color: #e7c5d1;
-}
 .menu{
   background-color: #aac57b;
 }

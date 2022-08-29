@@ -1,43 +1,126 @@
 <template>
   <div  class="f-header">
-    <span>
-      <el-icon><Promotion /></el-icon>
+    <span class="logo">
+      <el-tooltip effect="dark" content="西兰花🥦" placement="bottom-end">
+        <el-icon class="icon-btn"><Promotion /></el-icon>
+      </el-tooltip>
       西兰花🥦
     </span>
-    <el-icon><Fold /></el-icon>
+    <el-tooltip effect="dark" content="折叠" placement="bottom-end">
+      <el-icon class="icon-btn"><Fold /></el-icon>
+    </el-tooltip>
 
-    <div>
-      <el-icon><Refresh /></el-icon>
-      <el-icon><FullScreen /></el-icon>
-      <el-dropdown>
-    <span class="el-dropdown-link">
-      <el-avatar :size="30" :src="$store.state.manager.avatar" />
-      用户名
-      <el-icon class="el-icon--right">
-        <arrow-down />
-      </el-icon>
-    </span>
+    <div class="ml-auto flex items-center">
+      <el-tooltip effect="dark" content="刷新" placement="bottom-end">
+        <el-icon class="icon-btn" @click="refresh"><Refresh /></el-icon>
+      </el-tooltip>
+      <el-tooltip effect="dark" :content="!isFullscreen?'全屏':'退出全屏'" placement="bottom-end">
+        <el-icon class="icon-btn" @click="toggle">
+          <FullScreen v-if="!isFullscreen" />
+          <Aim v-else />
+        </el-icon>
+      </el-tooltip>
+      <el-dropdown class="dropdown">
+        <span class="el-dropdown-link flex items-center">
+          <el-avatar class="mr-2" :size="30" :src="$store.state.manager.avatar" />
+          {{$store.state.manager.username}}
+          <el-icon class="el-icon--right">
+            <arrow-down />
+          </el-icon>
+        </span>
         <template #dropdown>
           <el-dropdown-menu>
-            <el-dropdown-item>修改密码</el-dropdown-item>
+            <el-dropdown-item @click="drawer = true">修改密码</el-dropdown-item>
             <el-dropdown-item @click="logout">退出登录</el-dropdown-item>
           </el-dropdown-menu>
         </template>
       </el-dropdown>
     </div>
+
+<!--    修改密码抽屉-->
+    <FormDrawer v-model="drawer" title="修改密码" @handleClose="handleClose" @onSubmit="onSubmit">
+      <el-form ref="formRef"  :model="formInline" :rules="rules" label-width="100px">
+        <el-form-item label="旧密码：" prop="oldpassword">
+          <el-input type="password" v-model.trim="formInline.oldpassword" placeholder="请输入旧密码" clearable />
+        </el-form-item>
+        <el-form-item label="新密码：" prop="password">
+          <el-input type="password" v-model.trim="formInline.password" placeholder="请输入新密码" clearable />
+        </el-form-item>
+        <el-form-item label="确认密码：" prop="repassword">
+          <el-input type="password" v-model.trim="formInline.repassword" placeholder="请输入确认密码" clearable />
+        </el-form-item>
+      </el-form>
+    </FormDrawer>
   </div>
 </template>
 
 <script setup>
+import {reactive, ref} from 'vue'
 import {useStore} from "vuex"
 import {useRouter} from "vue-router"
-import {ElMessage} from "element-plus";
+import {ElMessage,ElMessageBox} from "element-plus";
 import { messageBox } from '@/utils/message'
-import {loginOut} from "@/request/api/manager";
+import {loginOut,changePassword} from "@/request/api/manager";
+import {useFullscreen} from '@vueuse/core'
+import FormDrawer from '@/components/FormDrawer.vue'
 
 const store = useStore()
 const router = useRouter()
+const {isFullscreen,toggle} = useFullscreen()
+const drawer = ref(false)
+const formRef = ref()
+//修改密码字段
+const formInline = reactive({
+  oldpassword: '',
+  password: '',
+  repassword: '',
+})
+const rules = {
+  oldpassword:{ required: true, message: '请输入旧密码', trigger: 'blur' },
+  password:{ required: true, message: '请输入新密码', trigger: 'blur' },
+  repassword:{ required: true, validator: () => simplePassword(), trigger: 'blur' }
+}
+//确认密码是否相同校验
+const simplePassword = () => {
+  return new Promise((resolve, reject) => {
+    if (!formInline.repassword){
+      reject('请再次输入密码！')
+    } else if (formInline.repassword !== formInline.password) {
+      reject('两次密码不一致！')
+    } else {
+      resolve()
+    }
+  })
+}
 
+//刷新
+const refresh = () => location.reload()
+
+//关闭修改密码
+const handleClose = () => {
+  formInline.oldpassword = ''
+  formInline.password = ''
+  formInline.repassword = ''
+}
+
+//修改密码
+const onSubmit = () => {
+  formRef.value.validate(async (isValid) => {
+    if (!isValid) {
+      return
+    }
+    //修改密码请求
+    let res = await changePassword(formInline)
+    if (res.code !== 200) {
+      return ElMessage.error(res.msg + '!')
+    }
+    ElMessage.success('修改密码成功，请重新登录!')
+    store.dispatch('manager/loginOutAction')
+    router.replace('/login')
+  })
+}
+
+//退出登录
 const logout = async () => {
   let  res = await messageBox('确认退出登录?')
   if (!res)  return
