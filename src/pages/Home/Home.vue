@@ -4,7 +4,7 @@
       <Header />
     </el-header>
     <el-container>
-      <el-aside class="menu">
+      <el-aside>
         <Menu/>
       </el-aside>
       <el-main>
@@ -22,9 +22,6 @@ import Menu from '@/components/Menu.vue'
 </script>
 
 <style scoped lang="less">
-.menu{
-  background-color: #aac57b;
-}
 .board{
   background-color: #1c6ca1;
 }

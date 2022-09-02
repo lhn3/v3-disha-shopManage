@@ -38,7 +38,7 @@
     </div>
 
 <!--    修改密码抽屉-->
-    <FormDrawer v-model="drawer" title="修改密码" @handleClose="handleClose" @onSubmit="onSubmit">
+    <FormDrawer v-model="drawer" title="修改密码" @handleClose="handleClose" @onSubmit="onSubmit" :loading="loading">
       <el-form ref="formRef"  :model="formInline" :rules="rules" label-width="100px">
         <el-form-item label="旧密码：" prop="oldpassword">
           <el-input type="password" v-model.trim="formInline.oldpassword" placeholder="请输入旧密码" clearable />
@@ -58,7 +58,7 @@
 import {reactive, ref} from 'vue'
 import {useStore} from "vuex"
 import {useRouter} from "vue-router"
-import {ElMessage,ElMessageBox} from "element-plus";
+import {ElMessage} from "element-plus";
 import { messageBox } from '@/utils/message'
 import {loginOut,changePassword} from "@/request/api/manager";
 import {useFullscreen} from '@vueuse/core'
@@ -69,6 +69,7 @@ const router = useRouter()
 const {isFullscreen,toggle} = useFullscreen()
 const drawer = ref(false)
 const formRef = ref()
+const loading = ref(false)
 //修改密码字段
 const formInline = reactive({
   oldpassword: '',
@@ -101,16 +102,19 @@ const handleClose = () => {
   formInline.oldpassword = ''
   formInline.password = ''
   formInline.repassword = ''
+  formRef.value.clearValidate()
 }
 
 //修改密码
 const onSubmit = () => {
+  loading.value = true
   formRef.value.validate(async (isValid) => {
     if (!isValid) {
       return
     }
     //修改密码请求
     let res = await changePassword(formInline)
+    loading.value = false
     if (res.code !== 200) {
       return ElMessage.error(res.msg + '!')
     }
@@ -136,7 +140,8 @@ const logout = async () => {
 
 <style scoped>
 .f-header {
-  @apply fixed top-0 left-0 right-0 z-60 bg-indigo-700 text-light-50 flex items-center shadow;
+  background-color: #757d8e;
+  @apply fixed top-0 left-0 right-0 z-60 text-light-50 flex items-center shadow;
   height: 64px;
 }
 .logo{
