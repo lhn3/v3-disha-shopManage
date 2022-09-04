@@ -1,10 +1,10 @@
 <template>
-  <el-container>
+  <el-container style="overflow: hidden">
     <el-header>
       <Header />
     </el-header>
     <el-container>
-      <el-aside>
+      <el-aside class="aside" :width="!$store.state.isFoldMenu ? '250px' : '64px'">
         <Menu/>
       </el-aside>
       <el-main>
@@ -12,7 +12,7 @@
         <router-view />
       </el-main>
     </el-container>
-    </el-container>
+  </el-container>
 </template>
 
 <script setup>
@@ -22,6 +22,9 @@ import Menu from '@/components/Menu.vue'
 </script>
 
 <style scoped lang="less">
+.aside{
+  transition: all 0.5s;
+}
 .board{
   background-color: #1c6ca1;
 }

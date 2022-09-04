@@ -3,9 +3,15 @@ import managerStore from './managerStore'
 
 export const store = createStore({
   state(){
-    return {}
+    return {
+      isFoldMenu: false
+    }
   },
-  mutations: {},
+  mutations: {
+    changeFold(state){
+      state.isFoldMenu = !state.isFoldMenu
+    }
+  },
   getters:{},
   actions:{},
   modules:{

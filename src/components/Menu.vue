@@ -3,24 +3,27 @@
     <el-menu
         active-text-color="#ffd04b"
         background-color="#545c64"
-        default-active="2"
+        :default-active="$route.path === '/home' ? '/' : $route.path"
         class="menu"
         text-color="#fff"
+        :collapse="$store.state.isFoldMenu"
+        :collapse-transition="false"
+        :unique-opened="true"
     >
-      <template v-for="(item, index) in menuList" :key="item.name">
+      <template v-for="(item, index) in $store.state.manager.menus" :key="item.name">
         <el-sub-menu :index="index" v-if="item.child && item.child.length > 0">
           <template #title>
             <el-icon><component :is="item.icon" /></el-icon>
             <span>{{ item.name }}</span>
           </template>
-          <el-menu-item v-for="(i, indey) in item.child" :index="`${index}-${indey}`" :key="item.name">
+          <el-menu-item v-for="i in item.child" :index="i.frontpath" :key="item.name" @click="toPatch(i.frontpath)">
             <el-icon><component :is="i.icon" /></el-icon>
-            <router-link :to="i.frontpath">{{ i.name }}</router-link>
+            <template #title>{{ i.name }}</template>
           </el-menu-item>
         </el-sub-menu>
-        <el-menu-item :index="index" v-else>
+        <el-menu-item :index="item.frontpath" v-else @click="toPatch(item.frontpath)">
           <el-icon><component :is="item.icon" /></el-icon>
-          <router-link :to="item.frontpath">{{ item.name }}</router-link>
+          <template #title>{{ item.name }}</template>
         </el-menu-item>
       </template>
     </el-menu>
@@ -29,7 +32,11 @@
 
 <script setup>
 import { ref } from "vue";
+import {useStore} from "vuex";
+import {useRouter,useRoute} from "vue-router";
 
+const router = useRouter()
+const store = useStore()
 const menuList = ref([])
 menuList.value = [
   {
@@ -39,12 +46,12 @@ menuList.value = [
       {
         name: '主控台',
         icon: 'home-filled',
-        frontpath: '/'
+        frontpath: '/home/about'
       },
       {
         name: '日志',
         icon: 'home-filled',
-        frontpath: '/'
+        frontpath: '/home'
       }
     ]
   },
@@ -59,21 +66,27 @@ menuList.value = [
     frontpath: '/'
   }
 ]
+const toPatch = (path) => {
+  router.push(path)
+}
 </script>
 
 <style scoped lang="less">
 .f-menu{
-  width: 250px;
+  width: 100%;
   height: calc(100vh - 60px);
   top: 64px;
   bottom: 0;
   left: 0;
-  overflow: auto;
+  overflow-y: auto;
   @apply shadow-md fixd;
   .menu{
     border: none;
     height: 100%;
   }
+}
+.f-menu::-webkit-scrollbar{
+  width: 0;
 }
 
 </style>

@@ -1,10 +1,10 @@
 <template>
-  111
+  <div>分类管理</div>
 </template>
 
 <script>
 export default {
-  name: "About"
+  name: "CateGory"
 }
 </script>
 

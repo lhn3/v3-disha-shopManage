@@ -7,7 +7,10 @@
       西兰花🥦
     </span>
     <el-tooltip effect="dark" content="折叠" placement="bottom-end">
-      <el-icon class="icon-btn"><Fold /></el-icon>
+      <el-icon class="icon-btn" @click="$store.commit('changeFold')">
+        <Fold v-if="!$store.state.isFoldMenu" />
+        <Expand v-else />
+      </el-icon>
     </el-tooltip>
 
     <div class="ml-auto flex items-center">
@@ -55,7 +58,7 @@
 </template>
 
 <script setup>
-import {reactive, ref} from 'vue'
+import {reactive, ref, defineEmits} from 'vue'
 import {useStore} from "vuex"
 import {useRouter} from "vue-router"
 import {ElMessage} from "element-plus";
@@ -155,7 +158,7 @@ const logout = async () => {
   cursor: pointer;
 }
 .f-header .icon-btn:hover{
-  @apply bg-indigo-600;
+  background-color: #545c64;
 }
 .f-header .dropdown{
   height: 64px;
