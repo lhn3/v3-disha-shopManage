@@ -31,41 +31,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import {useStore} from "vuex";
-import {useRouter,useRoute} from "vue-router";
+import {useRouter} from "vue-router";
 
 const router = useRouter()
-const store = useStore()
-const menuList = ref([])
-menuList.value = [
-  {
-    name: '后台面板',
-    icon: 'help',
-    child: [
-      {
-        name: '主控台',
-        icon: 'home-filled',
-        frontpath: '/home/about'
-      },
-      {
-        name: '日志',
-        icon: 'home-filled',
-        frontpath: '/home'
-      }
-    ]
-  },
-  {
-    name: '1111',
-    icon: 'help',
-    frontpath: '/'
-  },
-  {
-    name: '2222',
-    icon: 'help',
-    frontpath: '/'
-  }
-]
 const toPatch = (path) => {
   router.push(path)
 }

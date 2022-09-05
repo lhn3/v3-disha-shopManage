@@ -1,5 +1,5 @@
 <template>
-  <el-container style="overflow: hidden">
+  <el-container style="overflow: hidden;background-color: #f1f2f5">
     <el-header>
       <Header />
     </el-header>
@@ -8,8 +8,14 @@
         <Menu/>
       </el-aside>
       <el-main>
-        <div class="board">面包屑</div>
-        <router-view />
+        <Bread />
+        <div class="main-view">
+          <router-view v-slot="{ Component }">
+            <keep-alive :max="5">
+              <component :is="Component" />
+            </keep-alive>
+          </router-view>
+        </div>
       </el-main>
     </el-container>
   </el-container>
@@ -18,14 +24,17 @@
 <script setup>
 import Header from '@/components/Header.vue'
 import Menu from '@/components/Menu.vue'
-
+import Bread from "@/components/Bread.vue";
 </script>
 
 <style scoped lang="less">
 .aside{
   transition: all 0.5s;
 }
-.board{
-  background-color: #1c6ca1;
+.main-view{
+  padding-top: 30px;
+  width: 100%;
+  height: 100%;
+  background-color: white;
 }
 </style>

@@ -30,7 +30,6 @@ import {User,Lock} from '@element-plus/icons-vue'
 import {login,getUserInfo} from "@/request/api/manager";
 import {useRouter} from "vue-router";
 import {useStore} from 'vuex'
-import {addRoutesFunc} from "@/router/index.js";
 
 const formRef = ref()
 const router = useRouter()

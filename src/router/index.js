@@ -56,6 +56,8 @@ router.beforeEach((to, from, next) => {
     }
     flag ? next(to.fullPath) : next()
 })
+
+//取消进度条
 router.afterEach(() => {
     nprogress.done()
 })
