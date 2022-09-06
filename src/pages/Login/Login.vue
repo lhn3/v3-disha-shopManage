@@ -66,7 +66,7 @@ const onSubmit = () => {
 
     ElMessage.success('登陆成功~')
     // 跳转路由到首页
-    router.replace('/home')
+    router.replace('/')
   })
 }
 </script>

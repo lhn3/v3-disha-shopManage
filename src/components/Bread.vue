@@ -10,7 +10,7 @@
       <el-tab-pane
           v-for="item in tabsList"
           :key="item.path"
-          :closable="item.path !== '/home'"
+          :closable="item.path !== '/'"
           :label="item.title"
           :name="item.path"
       />
@@ -43,7 +43,7 @@ const activeTab = ref(route.path)
 const tabsList = ref([
   {
     title: '主控台',
-    path: '/home'
+    path: '/'
   }
 ])
 
@@ -98,9 +98,9 @@ const closeOther = () =>{
   })
   tabsList.value = [{
     title: '主控台',
-    path: '/home'
+    path: '/'
   }]
-  tabsList.value.push(res)
+  if (res.path !== '/' ) tabsList.value.push(res)
   cookies.set('disha-bread', tabsList.value)
 }
 
@@ -108,9 +108,9 @@ const closeOther = () =>{
 const closeAll = () => {
   tabsList.value = [{
       title: '主控台',
-      path: '/home'
+      path: '/'
     }]
-  router.push('/home')
+  router.push('/')
   cookies.set('disha-bread', tabsList.value)
 }
 </script>
@@ -142,6 +142,12 @@ const closeAll = () => {
   }
   :deep(.is-disabled){
     cursor: not-allowed;
+  }
+  :deep(.el-tabs__item:hover){
+    color: #42b983;
+  }
+  :deep(.is-active){
+    color: #42b983;
   }
 }
 </style>

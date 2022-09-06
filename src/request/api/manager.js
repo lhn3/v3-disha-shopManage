@@ -29,3 +29,10 @@ export const loginOut = () => {
     url: '/admin/logout'
   })
 }
+
+//首页数据
+export const getHomeInfo = () => {
+  return myAxios.get({
+    url: '/admin/statistics1'
+  })
+}

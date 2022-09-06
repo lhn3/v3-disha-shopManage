@@ -1,7 +1,7 @@
 <template>
   <div class="f-menu">
     <el-menu
-        active-text-color="#ffd04b"
+        active-text-color="#ffa33f"
         background-color="#545c64"
         :default-active="$route.path === '/home' ? '/' : $route.path"
         class="menu"

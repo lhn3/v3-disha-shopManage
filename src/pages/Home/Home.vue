@@ -32,7 +32,7 @@ import Bread from "@/components/Bread.vue";
   transition: all 0.5s;
 }
 .main-view{
-  padding-top: 30px;
+  padding-top: 28px;
   width: 100%;
   height: 100%;
   background-color: white;

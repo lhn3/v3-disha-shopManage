@@ -143,7 +143,7 @@ const logout = async () => {
 
 <style scoped>
 .f-header {
-  background-color: #757d8e;
+  background-color: #43474f;
   @apply fixed top-0 left-0 right-0 z-60 text-light-50 flex items-center shadow;
   height: 64px;
 }
