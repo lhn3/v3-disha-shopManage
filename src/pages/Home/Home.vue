@@ -34,7 +34,12 @@ import Bread from "@/components/Bread.vue";
 .main-view{
   padding-top: 28px;
   width: 100%;
-  height: 100%;
+  height: calc(100vh - 60px - 44px);
+  overflow: auto;
+  overflow-x: hidden;
   background-color: white;
+}
+.main-view::-webkit-scrollbar {
+  display: none;
 }
 </style>

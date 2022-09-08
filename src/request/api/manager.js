@@ -36,3 +36,11 @@ export const getHomeInfo = () => {
     url: '/admin/statistics1'
   })
 }
+
+//首页数据
+export const getHomeEcharts = (data) => {
+  return myAxios.get({
+    url: '/admin/statistics3',
+    data
+  })
+}

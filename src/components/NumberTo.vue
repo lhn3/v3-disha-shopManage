@@ -3,7 +3,7 @@
 </template>
 
 <script setup>
-import {defineProps, reactive, watch} from "vue";
+import {defineProps, onActivated, reactive, watch} from "vue";
 import {gsap} from "gsap";
 
 const props = defineProps({
@@ -24,7 +24,9 @@ const func = () => {
     count: props.value
   })
 }
-
+onActivated(()=>{
+  func()
+})
 watch(
     () => props.value,
     () => func(),

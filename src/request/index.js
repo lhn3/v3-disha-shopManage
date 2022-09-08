@@ -72,7 +72,7 @@ class myRequest {
   }
 
   get(config){
-    return this.request({ ...config, method: 'GET' })
+    return this.request({ ...config, params: config.data, method: 'GET' })
   }
 
   post(config){
