@@ -26,22 +26,18 @@
       <!--      -->
 
       <el-col :span="6" v-for="item in panels" :key="item.subTitle" v-else>
-        <el-card shadow="hover" style="cursor: pointer">
-          <template #header>
-            <div class="cart-title">
-              <span>{{ item.title }}</span>
-              <el-tag :type="item.unitColor" effect="plain">{{ item.unit }}</el-tag>
+        <Cart :title="item.title" :tag-type="item.unitColor" :tag-info="item.unit">
+          <template #body>
+            <div class="cart-value">
+              <NumberTo :value="item.value" />
+            </div>
+            <el-divider />
+            <div class="cart-bottom">
+              <span>{{ item.subTitle }}</span>
+              <span>{{ item.subValue }}</span>
             </div>
           </template>
-          <div class="cart-value">
-            <NumberTo :value="item.value" />
-          </div>
-          <el-divider />
-          <div class="cart-bottom">
-            <span>{{ item.subTitle }}</span>
-            <span>{{ item.subValue }}</span>
-          </div>
-        </el-card>
+        </Cart>
       </el-col>
     </el-row>
 </template>
@@ -50,6 +46,7 @@
 import {getHomeInfo} from "@/request/api/manager.js";
 import {onMounted, ref} from "vue";
 import {ElMessage} from "element-plus";
+import Cart from '@/components/Cart.vue'
 import NumberTo from '@/components/NumberTo.vue'
 
 const panels = ref([])
@@ -64,12 +61,6 @@ onMounted(async ()=>{
 </script>
 
 <style scoped lang="less">
-  .cart-title{
-  @apply text-sm;
-    display: flex;
-    justify-content: space-between;
-    line-height: 30px;
-  }
   .cart-value{
   @apply text-4xl font-bold text-gray-500;
     line-height: 70px;

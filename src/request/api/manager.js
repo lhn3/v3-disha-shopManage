@@ -37,10 +37,16 @@ export const getHomeInfo = () => {
   })
 }
 
-//首页数据
+//echarts数据
 export const getHomeEcharts = (data) => {
   return myAxios.get({
     url: '/admin/statistics3',
     data
+  })
+}
+
+export const getHomeOther = () => {
+  return myAxios.get({
+    url: '/admin/statistics2'
   })
 }
