@@ -46,9 +46,7 @@ const formInline = reactive({
 
 const onSubmit = () => {
   formRef.value.validate(async (isValid) => {
-    if (!isValid) {
-      return
-    }
+    if (!isValid) return
     //登录
     let loginRes = await login({username: formInline.username, password: formInline.password})
     if (loginRes.code !== 200) {

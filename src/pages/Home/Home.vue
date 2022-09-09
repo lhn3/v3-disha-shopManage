@@ -41,7 +41,7 @@ import Bread from "@/components/Bread.vue";
   background-color: white;
 }
 
-.main-view::-webkit-scrollbar {
-  display: none;
-}
+//.main-view::-webkit-scrollbar {
+//  display: none;
+//}
 </style>
