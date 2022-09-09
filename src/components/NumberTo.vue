@@ -1,5 +1,5 @@
 <template>
-  {{number.count.toFixed(1)}}
+  {{ number.count.toFixed(1) }}
 </template>
 
 <script setup>
@@ -8,30 +8,30 @@ import {gsap} from "gsap";
 
 const props = defineProps({
   value: {
-    type:Number,
-    default:0
+    type: Number,
+    default: 0
   }
 })
 
 const number = reactive({
-  count:0
+  count: 0
 })
 
 //将number中的count在一定时间内变成某个值
 const func = () => {
-  gsap.to(number ,{
+  gsap.to(number, {
     duration: 0.5,
     count: props.value
   })
 }
-onActivated(()=>{
+onActivated(() => {
   func()
 })
 watch(
     () => props.value,
     () => func(),
     {
-      immediate:true
+      immediate: true
     }
 )
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div class="main">
     <el-result
-      icon="warning"
-      title="404"
-      sub-title="你所访问的页面不存在~"
+        icon="warning"
+        title="404"
+        sub-title="你所访问的页面不存在~"
     >
       <template #extra>
         <el-button type="primary" @click="home">去首页</el-button>
@@ -22,7 +22,7 @@ const home = () => {
 </script>
 
 <style scoped>
-.main{
+.main {
   height: 100vh;
   width: 100vw;
   display: flex;

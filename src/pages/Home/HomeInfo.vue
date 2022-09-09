@@ -1,11 +1,11 @@
 <template>
   <div class="home-info">
     <!--  头部开篇数据-->
-    <TopCart />
+    <TopCart v-permission="['getStatistics1,GET']"/>
     <!--  中间导航-->
-    <TabCart />
+    <TabCart/>
     <!--  可视化数据 -->
-    <EchartsCart />
+    <EchartsCart/>
   </div>
 </template>
 
@@ -16,8 +16,9 @@ import EchartsCart from './cpns/EchartsCart.vue'
 </script>
 
 <style scoped lang="less">
- .home-info{
-   padding-top: 10px;
-   background-color: #f1f2f5;
- }
+.home-info {
+  padding-top: 10px;
+  //height: 100%;
+  background-color: #f1f2f5;
+}
 </style>

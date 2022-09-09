@@ -2,20 +2,20 @@ import {createStore} from 'vuex'
 import managerStore from './managerStore'
 
 export const store = createStore({
-  state(){
+  state() {
     return {
       isFoldMenu: false
     }
   },
   mutations: {
-    changeFold(state){
+    changeFold(state) {
       state.isFoldMenu = !state.isFoldMenu
     }
   },
-  getters:{},
-  actions:{},
-  modules:{
-    manager:managerStore
+  getters: {},
+  actions: {},
+  modules: {
+    manager: managerStore
   }
 })
 

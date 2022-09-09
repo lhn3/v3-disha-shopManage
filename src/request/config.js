@@ -11,4 +11,4 @@ if (process.env.NODE_ENV === 'development') {
   BASE_URL = ''
 }
 
-export { BASE_URL, TIME_OUT }
+export {BASE_URL, TIME_OUT}

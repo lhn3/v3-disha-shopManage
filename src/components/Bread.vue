@@ -17,7 +17,7 @@
     </el-tabs>
     <el-dropdown class="dropdown">
       <span class="el-dropdown-link" style="cursor: pointer">
-        <el-icon><arrow-down /></el-icon>
+        <el-icon><arrow-down/></el-icon>
       </span>
       <template #dropdown>
         <el-dropdown-menu>
@@ -32,8 +32,8 @@
 
 <script setup>
 
-import { ref } from 'vue'
-import { useRoute,useRouter,onBeforeRouteUpdate } from "vue-router";
+import {ref} from 'vue'
+import {useRoute, useRouter, onBeforeRouteUpdate} from "vue-router";
 import {useCookies} from '@vueuse/integrations/useCookies'
 
 let route = useRoute()
@@ -59,7 +59,7 @@ onBeforeRouteUpdate((to) => {
   let res = tabsList.value.find(item => {
     return item.path === to.path
   })
-  if (!res){
+  if (!res) {
     tabsList.value.push({
       title: to.meta.title,
       path: to.path
@@ -92,7 +92,7 @@ const removeTab = (targetName) => {
 }
 
 //删除其他
-const closeOther = () =>{
+const closeOther = () => {
   let res = tabsList.value.find(item => {
     return item.path === route.path
   })
@@ -100,53 +100,60 @@ const closeOther = () =>{
     title: '主控台',
     path: '/'
   }]
-  if (res.path !== '/' ) tabsList.value.push(res)
+  if (res.path !== '/') tabsList.value.push(res)
   cookies.set('disha-bread', tabsList.value)
 }
 
 //删除全部
 const closeAll = () => {
   tabsList.value = [{
-      title: '主控台',
-      path: '/'
-    }]
+    title: '主控台',
+    path: '/'
+  }]
   router.push('/')
   cookies.set('disha-bread', tabsList.value)
 }
 </script>
 
 <style scoped lang="less">
-.f-bread{
-  @apply fixed bg-gray-100 flex items-center px-2;
+.f-bread {
+@apply fixed bg-gray-100 flex items-center px-2;
   top: 64px;
   right: 0;
   height: 44px;
   z-index: 9;
   transition: all 0.5s;
-  .dropdown{
-    @apply bg-white rounded ml-auto flex items-center justify-center px-2;
-    height: 32px ;
+
+  .dropdown {
+  @apply bg-white rounded ml-auto flex items-center justify-center px-2;
+    height: 32px;
   }
-  :deep(.el-tabs__header){
-    @apply mb-0;
+
+  :deep(.el-tabs__header) {
+  @apply mb-0;
     border: none;
   }
-  :deep(.el-tabs__nav){
-    border: 0!important;
+
+  :deep(.el-tabs__nav) {
+    border: 0 !important;
   }
-  :deep(.el-tabs__item){
-    border: 0!important;
-    @apply bg-white mx-1 rounded mt-1;
+
+  :deep(.el-tabs__item) {
+    border: 0 !important;
+  @apply bg-white mx-1 rounded mt-1;
     height: 32px;
     line-height: 32px;
   }
-  :deep(.is-disabled){
+
+  :deep(.is-disabled) {
     cursor: not-allowed;
   }
-  :deep(.el-tabs__item:hover){
+
+  :deep(.el-tabs__item:hover) {
     color: #42b983;
   }
-  :deep(.is-active){
+
+  :deep(.is-active) {
     color: #42b983;
   }
 }

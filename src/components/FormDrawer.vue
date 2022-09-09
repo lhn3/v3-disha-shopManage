@@ -12,7 +12,7 @@
   >
     <div class="main">
       <div class="body">
-        <slot />
+        <slot/>
       </div>
       <div class="btn">
         <el-button class="w-[60px]" type="default" @click="cancel">取消</el-button>
@@ -24,33 +24,34 @@
 
 <script setup>
 import {defineEmits, defineProps, ref} from "vue";
-const props =defineProps({
-  moduleValue:{
-    type:Boolean,
-    default:false
-  },
-  title:{
-    type:String,
-    default:'默认标题'
-  },
-  width:{
-    type:String,
-    default: '30%'
-  },
-  destroyOnClose:{
-    type:Boolean,
+
+const props = defineProps({
+  moduleValue: {
+    type: Boolean,
     default: false
   },
-  closeOnPressEscape:{
-    type:Boolean,
-    default:true
+  title: {
+    type: String,
+    default: '默认标题'
   },
-  loading:{
-    type:Boolean,
-    default:false
+  width: {
+    type: String,
+    default: '30%'
+  },
+  destroyOnClose: {
+    type: Boolean,
+    default: false
+  },
+  closeOnPressEscape: {
+    type: Boolean,
+    default: true
+  },
+  loading: {
+    type: Boolean,
+    default: false
   }
 })
-const emit = defineEmits(['handleClose','onSubmit'])
+const emit = defineEmits(['handleClose', 'onSubmit'])
 const drawerRef = ref()
 
 //取消
@@ -65,17 +66,19 @@ const confirm = () => {
 </script>
 
 <style scoped lang="less">
-.main{
+.main {
   width: 100%;
   height: 100%;
   display: flex;
   justify-content: space-between;
   flex-direction: column;
-  .body{
+
+  .body {
     flex: 1;
     overflow-y: auto;
   }
-  .btn{
+
+  .btn {
     height: 40px;
     display: flex;
     align-items: center;

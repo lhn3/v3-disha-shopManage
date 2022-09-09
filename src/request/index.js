@@ -1,10 +1,11 @@
 import axios from 'axios'
-import { ElLoading } from 'element-plus/lib'
-import { BASE_URL, TIME_OUT } from './config'
+import {ElLoading} from 'element-plus/lib'
+import {BASE_URL, TIME_OUT} from './config'
 // import localCache from '@/utils/cache'
 import {useCookies} from '@vueuse/integrations/useCookies'
 
 let cookies = useCookies()
+
 //创建封装axios类
 class myRequest {
   //创建实例化之后即调用
@@ -57,7 +58,7 @@ class myRequest {
   }
 
   //  定义request方法
-  request(config){
+  request(config) {
     //返回一个promise
     return new Promise((resolve, reject) => {
       this.instance.request(config)
@@ -71,24 +72,24 @@ class myRequest {
     })
   }
 
-  get(config){
-    return this.request({ ...config, params: config.data, method: 'GET' })
+  get(config) {
+    return this.request({...config, params: config.data, method: 'GET'})
   }
 
-  post(config){
-    return this.request({ ...config, method: 'POST' })
+  post(config) {
+    return this.request({...config, method: 'POST'})
   }
 
-  delete(config){
-    return this.request({ ...config, method: 'DELETE' })
+  delete(config) {
+    return this.request({...config, method: 'DELETE'})
   }
 
-  put(config){
-    return this.request({ ...config, method: 'PUT' })
+  put(config) {
+    return this.request({...config, method: 'PUT'})
   }
 
-  patch(config){
-    return this.request({ ...config, method: 'PATCH' })
+  patch(config) {
+    return this.request({...config, method: 'PATCH'})
   }
 }
 
