@@ -1,14 +1,16 @@
 <template>
   <el-container class="image-manager">
     <el-header class="image-header">
-      <el-button type="success" text bg round @click="drawer = true">新增图片分类</el-button>
+      <el-button type="success" text bg round @click="openDrawer">新增图片分类</el-button>
       <el-button type="warning" text bg round>上传图片</el-button>
     </el-header>
     <el-container class="image-container">
       <el-aside class="image-aside" width="250px">
         <div class="aside-list">
-          <SelectItem v-for="item in stateClassify.classify" :key="item.id" :title="item.name" @handelEdit="handelEdit(item.id)"
-                      @handelDelete="handelDelete(item.id)" :active="item.id === stateClassify.selectItemId" @handelTitle="handelTitle(item.id)"/>
+          <SelectItem v-for="item in stateClassify.classify" :key="item.id" :title="item.name"
+                      @handelEdit="handelEdit(item)"
+                      @handelDelete="handelDelete(item.id)" :active="item.id === stateClassify.selectItemId"
+                      @handelTitle="handelTitle(item.id)"/>
         </div>
         <div class="aside-pages">
           <el-pagination
@@ -39,13 +41,13 @@
     </el-container>
   </el-container>
 
-  <FormDrawer v-model="drawer" title="新增分类" :loading="loading" @handleClose="drawerClose" @onSubmit="drawerSubmit">
+  <FormDrawer v-model="drawer" :title="formData.title" :loading="loading" @handleClose="drawerClose" @onSubmit="drawerSubmit">
     <el-form ref="formRef" :model="formData" :rules="formData.rules" label-width="100px">
-      <el-form-item prop="classifyName" label="分类名称：">
-        <el-input v-model.trim="formData.name" placeholder="请输入分类名称" />
+      <el-form-item prop="name" label="分类名称：">
+        <el-input v-model.trim="formData.name" placeholder="请输入分类名称"/>
       </el-form-item>
       <el-form-item prop="order" label="排序：">
-        <el-input-number v-model="formData.order" min="0" max="1000 " precision="0"/>
+        <el-input-number v-model="formData.order" min="0" precision="0"/>
       </el-form-item>
     </el-form>
   </FormDrawer>
@@ -53,7 +55,7 @@
 
 <script setup>
 import SelectItem from '@/components/SelectItem.vue'
-import {getImageClassify, getImageList} from '@/request/api/otherModules.js'
+import {getImageClassify, getImageList, addClassify, updateClassify, delClassify} from '@/request/api/otherModules.js'
 import {onMounted, reactive, ref} from "vue";
 import {ElMessage} from "element-plus";
 import {messageBox} from "@/utils/message.js";
@@ -78,8 +80,10 @@ let stateImage = reactive({
   imageList: [], //图片列表
   totalCount: 0 //图片总数
 })
-//新增分类数据
+//新增修改分类数据
 let formData = reactive({
+  title: '',
+  id: null,
   name: '',
   order: 0,
   rules: {
@@ -114,7 +118,7 @@ const getImage = async (id) => {
 }
 
 //初始化数据
-onMounted( () => {
+onMounted(() => {
   getClassify(true)
 })
 
@@ -136,38 +140,70 @@ const pageCurrentChangeHandle = (val, type) => {
   }
 }
 
+//打开右侧抽屉
+const openDrawer = () => {
+  formData.order = stateClassify.classify[0].order + 1
+  formData.title = '新增分类'
+  drawer.value = true
+}
+
 //关闭右侧抽屉
 const drawerClose = () => {
+  formData.title = ''
+  formData.id = null
   formData.name = ''
   formData.order = 0
-  console.log('关闭')
 }
+
 //提交侧抽屉
 const drawerSubmit = () => {
-  formRef.value.validate(async (isValid) => {
+  formRef.value.validate(async isValid => {
     if (!isValid) return
     loading.value = true
-
-    setTimeout(()=>{
-      formData.name = ''
-      formData.order = 0
+    let res = formData.id
+        ? await updateClassify({id: formData.id, name: formData.name, order: formData.order})
+        : await addClassify({name: formData.name, order: formData.order})
+    if (res.code !== 200) {
       loading.value = false
-      drawer.value = false
-    },2000)
+      return ElMessage({
+        message: res.msg + '!',
+        type: 'error',
+        dangerouslyUseHTMLString: true
+      })
+    }
+    ElMessage.success(formData.id ? '修改成功~' : '新增成功~')
+    //清空数据
+    drawerClose()
+    loading.value = false
+    drawer.value = false
+    getClassify()
   })
 }
 
 //编辑按钮
-const handelEdit = id => {
+const handelEdit = item => {
+  formData.title = '修改分类'
+  formData.id = item.id
+  formData.name = item.name
+  formData.order = item.order
   drawer.value = true
-  console.log('编辑',id)
 }
+
 //删除按钮
-const handelDelete = async id => {
-  let res = await messageBox('确认删除？')
-  if (res) {
-    console.log('删除',id)
-  }
+const handelDelete = id => {
+  messageBox('确认删除？').then(async ()=>{
+    let res = await delClassify(id)
+    if (res.code !== 200) {
+      loading.value = false
+      return ElMessage({
+        message: res.msg + '!',
+        type: 'error',
+        dangerouslyUseHTMLString: true
+      })
+    }
+    ElMessage.success('删除成功~')
+    getClassify()
+  })
 }
 </script>
 
@@ -179,7 +215,6 @@ const handelDelete = async id => {
     border-bottom: 1px solid #eeeeee;
   @apply flex items-center;
   }
-
   .image-container {
     height: calc(100% - 70px);
     .image-aside {
@@ -195,7 +230,6 @@ const handelDelete = async id => {
       @apply flex items-center justify-center;
       }
     }
-
     .image-main {
       padding: 0;
       .main-list {
@@ -211,6 +245,9 @@ const handelDelete = async id => {
     }
   }
 }
-
+:deep(.el-input-number__decrease), :deep(.el-input-number__increase) {
+  top: 2px !important;
+  bottom: 2px !important;
+}
 
 </style>

@@ -14,14 +14,15 @@ export const permission = {
       mounted(el, bindings) {
         //传入的不是数组表示没有任何权限
         if (!Array.isArray(bindings.value)) {
-          el.parentNode && el.parentNode.removeChild(el)
+          el.style.display = 'none'
           return
         }
         //判断传入的所有权限是否都符合
         let flag = bindings.value.find(item => {
           if (store.state.manager.ruleNames.indexOf(item) === -1) return true
         })
-        if (flag) el.parentNode && el.parentNode.removeChild(el)
+        // if (flag) el.parentNode && el.parentNode.removeChild(el)
+        if (flag) el.style.display = 'none'
       }
     })
   }

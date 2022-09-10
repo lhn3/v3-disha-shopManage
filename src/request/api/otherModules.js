@@ -16,3 +16,27 @@ export const getImageList = (data) => {
     data: {limit: data.limit || 10}
   })
 }
+
+//新增分类标签
+export const addClassify = (data) => {
+  return myAxios.post({
+    url: '/admin/image_class',
+    data
+  })
+}
+
+//修改分类标签
+export const updateClassify = (data) => {
+  return myAxios.post({
+    url: `/admin/image_class/${data.id}`,
+    data
+  })
+}
+
+//删除分类标签
+export const delClassify = (id) => {
+  return myAxios.post({
+    url: `/admin/image_class/${id}/delete`
+  })
+}
+
