@@ -1,4 +1,4 @@
-import {ElMessageBox} from "element-plus";
+import {ElMessage, ElMessageBox} from "element-plus";
 
 /**
  * 全局进度条使用
@@ -22,5 +22,21 @@ export function messageBox(info, type = 'warning') {
     }).catch(() => {
       resolve(false)
     })
+  })
+}
+
+export function inputMessageBox(info,inputValue) {
+  return new Promise(resolve => {
+    ElMessageBox.prompt('', info, {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      inputValue
+    })
+      .then(({ value }) => {
+        resolve(value)
+      })
+      .catch(() => {
+        resolve(false)
+      })
   })
 }

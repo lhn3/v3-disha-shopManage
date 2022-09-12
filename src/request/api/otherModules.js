@@ -39,3 +39,19 @@ export const getImageList = (data) => {
   })
 }
 
+//图片重命名
+export const renameImage = (data) => {
+  return myAxios.post({
+    url: `/admin/image/${data.id}`,
+    data
+  })
+}
+
+//删除图片
+export const delImages = (data) => {
+  return myAxios.post({
+    url: '/admin/image/delete_all',
+    data
+  })
+}
+

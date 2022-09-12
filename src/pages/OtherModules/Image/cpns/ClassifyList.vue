@@ -139,7 +139,8 @@ const handelEdit = item => {
 
 //删除按钮
 const handelDelete = id => {
-  messageBox('确认删除？').then(async () => {
+  messageBox('确认删除？').then(async r => {
+    if (!r) return
     let res = await delClassify(id)
     if (res.code !== 200) {
       loading.value = false
