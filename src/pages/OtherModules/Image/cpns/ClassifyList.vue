@@ -101,6 +101,7 @@ const drawerClose = () => {
   formData.id = null
   formData.name = ''
   formData.order = 0
+  formRef.value.resetFields()
 }
 
 //提交侧抽屉

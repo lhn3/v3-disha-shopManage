@@ -7,6 +7,7 @@ import {ElMessage, ElMessageBox} from "element-plus";
  * nprogress.done()
  */
 
+//提示框
 export function messageBox(info, type = 'warning') {
   return new Promise(resolve => {
     ElMessageBox.confirm(
@@ -25,6 +26,7 @@ export function messageBox(info, type = 'warning') {
   })
 }
 
+//输入提示框
 export function inputMessageBox(info,inputValue) {
   return new Promise(resolve => {
     ElMessageBox.prompt('', info, {

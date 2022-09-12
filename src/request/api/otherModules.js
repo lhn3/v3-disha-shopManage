@@ -55,3 +55,33 @@ export const delImages = (data) => {
   })
 }
 
+//获取公告列表
+export const getNoticeList = (data) => {
+  return myAxios.get({
+    url: `/admin/notice/${data.page}`
+  })
+}
+
+//新增公告
+export const addNotice = (data) => {
+  return myAxios.post({
+    url: `/admin/notice`,
+    data
+  })
+}
+
+//修改公告
+export const updateNotice = (data) => {
+  return myAxios.post({
+    url: `/admin/notice/${data.id}`,
+    data
+  })
+}
+
+//删除公告
+export const delNotice = (id) => {
+  return myAxios.post({
+    url: `/admin/notice/${id}/delete`
+  })
+}
+
