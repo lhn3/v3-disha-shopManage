@@ -1,8 +1,8 @@
 <template>
   <div class="item" :class="{'active': props.active}">
     <div class="truncate" @click="handelClick('title')">{{ props.title }}</div>
-    <el-button class="ml-auto" type="text" style="font-size: 18px;height: 50px;" :icon="Edit" @click="handelClick('edit')"/>
-    <el-button type="text" style="font-size: 18px;height: 50px;" :icon="Close" @click="handelClick('delete')"/>
+    <el-button v-if="!props.isComponent" class="ml-auto" type="text" style="font-size: 18px;height: 50px;" :icon="Edit" @click="handelClick('edit')"/>
+    <el-button v-if="!props.isComponent" type="text" style="font-size: 18px;height: 50px;" :icon="Close" @click="handelClick('delete')"/>
   </div>
 </template>
 
@@ -16,6 +16,10 @@ const props = defineProps({
     default: ''
   },
   active: {
+    type: Boolean,
+    default: false
+  },
+  isComponent:{
     type: Boolean,
     default: false
   }

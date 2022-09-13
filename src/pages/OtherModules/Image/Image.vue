@@ -1,15 +1,15 @@
 <template>
   <el-container class="image-manager">
-    <el-header class="image-header">
+    <el-header class="image-header" v-if="!props.isComponent">
       <el-button type="success" text bg @click="openDrawer('classify')">新增图片分类</el-button>
       <el-button type="warning" text bg @click="openDrawer('image')">上传图片</el-button>
     </el-header>
     <el-container class="image-container">
       <el-aside class="image-aside" width="250px">
-        <ClassifyList ref="classifyRef" @handelInfo="handelInfo" />
+        <ClassifyList ref="classifyRef" @handelInfo="handelInfo" :is-component="props.isComponent" />
       </el-aside>
       <el-main class="image-main">
-        <ImageList ref="imageListRef" />
+        <ImageList ref="imageListRef" :is-component="props.isComponent" @chooseImageMiddle="chooseImageMiddle" />
       </el-main>
     </el-container>
   </el-container>
@@ -18,8 +18,15 @@
 <script setup>
 import ClassifyList from './cpns/ClassifyList.vue'
 import ImageList from './cpns/ImageList.vue'
-import {ref} from "vue";
+import {ref,defineProps,defineEmits} from "vue";
 
+const props = defineProps({
+  isComponent:{
+    type: Boolean,
+    default: false
+  }
+})
+const emit = defineEmits(['chooseImage'])
 const classifyRef = ref(null)
 const imageListRef = ref(null)
 
@@ -38,12 +45,16 @@ const openDrawer = type => {
   } else {
     imageListRef.value.drawer = true
   }
+}
 
+const chooseImageMiddle = url => {
+  emit('chooseImage',url)
 }
 </script>
 
 <style scoped lang="less">
 .image-manager {
+  border: 1px solid #eeeeee;
   height: 100%;
   .image-header {
     height: 70px;

@@ -5,9 +5,12 @@
         <el-card shadow="hover" :body-style="{ padding: '0px' }" class="image-cart">
           <el-image class="image-cart-image" :src="item.url" fit="cover" :preview-src-list="[item.url]"/>
           <div class="image-cart-title">{{ item.name }}</div>
-          <div class="image-cart-btns">
+          <div class="image-cart-btns" v-if="!props.isComponent">
             <el-button type="text" class="image-cart-btn1" @click="rename(item)">重命名</el-button>
             <el-button type="text" class="image-cart-btn2" @click="delImage(item.id)">删除</el-button>
+          </div>
+          <div class="image-cart-btns" style="cursor:pointer;" @click="chooseImage(item.url)" v-else>
+            <el-button type="text">选择图片</el-button>
           </div>
         </el-card>
       </el-col>
@@ -44,10 +47,19 @@
 import FormDrawer from "@/components/FormDrawer.vue"
 import {UploadFilled} from '@element-plus/icons-vue'
 import {ElMessage} from "element-plus";
-import {reactive, ref, defineExpose} from "vue";
+import {reactive, ref, defineExpose, defineProps, defineEmits} from "vue";
 import {getImageList, renameImage, delImages} from "@/request/api/otherModules.js";
 import {ElLoading} from 'element-plus/lib'
 import {inputMessageBox, messageBox} from "@/utils/message.js";
+
+const props = defineProps({
+  isComponent:{
+    type: Boolean,
+    default: false
+  }
+})
+
+const emit = defineEmits(['chooseImageMiddle'])
 
 let bodyLoading = null
 const drawer = ref(false)
@@ -131,6 +143,10 @@ const uploadSuccess = () => {
 const uploadError = error => {
   bodyLoading?.close()
   ElMessage.error(JSON.parse(error.message).msg || '上传失败')
+}
+
+const chooseImage = (url) => {
+  emit('chooseImageMiddle',url)
 }
 
 defineExpose({

@@ -10,7 +10,7 @@
         <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="getNotice"/>
       </el-tooltip>
     </div>
-    <el-table height="calc(100vh - 270px)" stripe :data="state.noticeList" border style="width: 100%"
+    <el-table height="calc(100vh - 270px)" :data="state.noticeList" border style="width: 100%"
               @cell-dblclick="editNotice">
       <el-table-column prop="title" label="公告标题" header-align="center" align="center"/>
       <el-table-column prop="content" label="公告内容" header-align="center" align="center"/>
@@ -164,14 +164,14 @@ const drawerSubmit = () => {
 
 <style scoped lang="less">
 .notice {
-  padding: 0 20px;
+  padding: 20px;
   .button {
     display: flex;
     justify-content: space-between;
-    padding: 20px 0;
+    padding-bottom: 20px;
   }
   .pagination {
-    margin-top: 15px;
+    margin-top: 10px;
     display: flex;
     justify-content: center;
   }

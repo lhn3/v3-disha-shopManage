@@ -3,7 +3,7 @@
     <SelectItem v-for="item in state.classify" :key="item.id" :title="item.name"
                 @handelEdit="handelEdit(item)"
                 @handelDelete="handelDelete(item.id)" :active="item.id === state.selectItemId"
-                @handelTitle="handelTitle(item.id)"/>
+                @handelTitle="handelTitle(item.id)" :is-component="props.isComponent"/>
   </div>
   <div class="classify-pages">
     <el-pagination
@@ -33,10 +33,17 @@
 <script setup>
 import SelectItem from '@/components/SelectItem.vue'
 import FormDrawer from "@/components/FormDrawer.vue"
-import {onMounted, reactive, ref, defineEmits} from "vue";
+import {onMounted, reactive, ref, defineEmits, defineProps} from "vue";
 import {messageBox} from "@/utils/message.js";
 import {addClassify, delClassify, getImageClassify, updateClassify} from "@/request/api/otherModules.js";
 import {ElMessage} from "element-plus";
+
+const props = defineProps({
+  isComponent:{
+    type: Boolean,
+    default: false
+  }
+})
 
 const emit = defineEmits(['handelInfo'])
 const drawer = ref(false)
