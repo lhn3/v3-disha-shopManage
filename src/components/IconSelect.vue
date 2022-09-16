@@ -4,7 +4,7 @@
       <component :is="props.modelValue"/>
     </el-icon>
 
-    <el-select v-model="props.modelValue" placeholder="请选择" filterable clearable style="width: 100%;" @change="changeSelect">
+    <el-select v-model="props.modelValue" placeholder="请选择" filterable clearable @change="changeSelect">
       <el-option v-for="item in icons" :key="item" :label="item" :value="item">
         <template #default>
           <div class="flex">

@@ -28,7 +28,7 @@
             <el-switch v-model="data.status" style="margin-right: 10px" :active-value="1" :inactive-value="0"
                        @change="(value) => changeStatus(value,data.id)"/>
             <el-button type="text" @click="editManager(data)">修改</el-button>
-            <el-button type="text">增加</el-button>
+            <el-button v-if="data.child.length > 0" type="text" @click="addEditManager(data)">增加</el-button>
             <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(data.id)">删除</el-button>
           </span>
         </span>
@@ -143,16 +143,13 @@ const changeStatus = async (value, id) => {
 
 //新增
 const openDrawer = () => {
-  state.title = '新增公告'
-  state.formData.status = 1
-  state.formData.icon = ''
+  state.title = '新增菜单/权限'
   state.drawer = true
 }
 
 //修改
 const editManager = (row) => {
-  console.log(row)
-  state.title = '修改公告'
+  state.title = '修改权菜单/权限'
   state.id = row.id
   state.formData.rule_id = row.rule_id
   state.formData.menu = row.menu
@@ -162,6 +159,15 @@ const editManager = (row) => {
   state.formData.method = row.method
   state.formData.frontpath = row.frontpath
   state.formData.order = row.order
+  state.drawer = true
+}
+
+//增加
+const addEditManager = (row) => {
+  console.log(row)
+  state.title = '增加子菜单/权限'
+  state.formData.rule_id = row.child[0]?.rule_id ?? row.rule_id
+  state.formData.menu = row.child[0]?.menu ?? row.menu
   state.drawer = true
 }
 
