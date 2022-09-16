@@ -195,12 +195,6 @@ const editManager = (row) => {
   state.drawer = true
 }
 
-//选择头像
-const chooseImage = url => {
-  state.formData.avatar = url
-  chooseImageVisible.value = false
-}
-
 //关闭右侧抽屉
 const drawerClose = () => {
   formRef.value.resetFields()
@@ -214,10 +208,17 @@ const drawerClose = () => {
   state.drawer = false
 }
 
+//提交
 const drawerSubmit = () => {
   _table.addOrUpdate(formRef.value, state.formData, state.id).then(res => {
     if (res) drawerClose()
   })
+}
+
+//选择头像
+const chooseImage = url => {
+  state.formData.avatar = url
+  chooseImageVisible.value = false
 }
 
 //上传的头像查看大图

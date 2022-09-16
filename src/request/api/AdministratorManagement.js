@@ -7,3 +7,11 @@ export const updateManagerStatus = (data) => {
     data
   })
 }
+
+//修改权限状态
+export const updateAccessStatus = (data) => {
+  return myAxios.post({
+    url: `/admin/rule/${data.id}/update_status`,
+    data
+  })
+}
