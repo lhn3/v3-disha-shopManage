@@ -35,7 +35,7 @@
       <el-table-column prop="status" label="状态" header-align="center" align="center">
         <template #default="{ row }">
           <el-switch v-model="row.status" :active-value="1" :inactive-value="0"
-                     @change="(value) => changeStatus(value, row.id)" :disabled="row.super === 1"/>
+                     @change="(value) => _table.changeStatus(value, row.id)" :disabled="row.super === 1"/>
         </template>
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
@@ -119,8 +119,6 @@
 import FormDrawer from '@/components/FormDrawer.vue'
 import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from "vue";
-import {ElMessage} from "element-plus";
-import {updateManagerStatus} from "@/request/api/AdministratorManagement.js";
 import Image from '@/pages/OtherModules/Image/Image.vue'
 import TableView from "@/utils/useView.js";
 
@@ -161,20 +159,6 @@ onMounted(() => {
     state.roles = res.data.roles
   })
 })
-
-//修改管理员状态
-const changeStatus = async (value, id) => {
-  let res = await updateManagerStatus({id, status: value})
-  if (res.code !== 200) {
-    _table.getDataList()
-    return ElMessage({
-      message: res.msg + '!',
-      type: 'error',
-      dangerouslyUseHTMLString: true
-    })
-  }
-  ElMessage.success('状态更新成功~')
-}
 
 //新增
 const openDrawer = () => {

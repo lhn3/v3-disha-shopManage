@@ -51,14 +51,13 @@ import {Refresh} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from "vue";
 import TableView from '@/utils/useView.js'
 
-const drawer = ref(false)
-const loading = ref(false)
 const formRef = ref()
 const state = reactive({
   url:'/admin/notice',
   deleteUrl: '/admin/notice',
   addUrl: '/admin/notice',
   updateUrl: '/admin/notice',
+  drawer: false,
   title: '',
   id: null,
   formData: {
