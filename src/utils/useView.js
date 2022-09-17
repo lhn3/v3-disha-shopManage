@@ -1,4 +1,4 @@
-import { reactive } from 'vue'
+import {reactive} from 'vue'
 import myAxios from '@/request'
 import {ElMessage} from "element-plus";
 import {messageBox} from "@/utils/message.js";
@@ -36,7 +36,7 @@ class TableView {
   }
 
   //遍历清空数据
-  clearObject(obj){
+  clearObject(obj) {
     Object.keys(obj).forEach(item => {
       if (Array.isArray(this.tableInfo.dataForm[item])) {
         this.tableInfo.dataForm[item] = []
@@ -60,13 +60,30 @@ class TableView {
     return new Promise(resolve => resolve(res))
   }
 
+  //改变状态
+  changeStatus = async (value, id) => {
+    let res = await myAxios.post({
+      url: `${this.tableInfo.url}/${id}/update_status`,
+      data: {status: value}
+    })
+    if (res.code !== 200) {
+      this.getDataList()
+      return ElMessage({
+        message: res.msg + '!',
+        type: 'error',
+        dangerouslyUseHTMLString: true
+      })
+    }
+    ElMessage.success('状态更新成功~')
+  }
+
   //新增或修改
-  addOrUpdate = (formRef, formData,id) => {
+  addOrUpdate = (formRef, formData, id) => {
     return new Promise(resolve => {
       formRef.validate(async isValid => {
         if (!isValid) {
           resolve(false)
-         return
+          return
         }
         this.tableInfo.loading = true
         let res = id
@@ -127,5 +144,44 @@ class TableView {
     })
   }
 
+  //获取其他信息
+  getOtherInfo = async (url) => {
+    let res = await myAxios.get({
+      url: `${url}/1`,
+      data: {limit: 9999}
+    })
+    if (res.code !== 200) {
+      this.getDataList()
+      return ElMessage({
+        message: res.msg + '!',
+        type: 'error',
+        dangerouslyUseHTMLString: true
+      })
+    }
+    return new Promise(resolve => resolve(res))
+  }
+
+  //修改其他信息
+  updateOther = (url, data) => {
+    return new Promise(async resolve => {
+      this.tableInfo.loading = true
+      let res = await myAxios.post({url, data})
+      if (res.code !== 200) {
+        this.tableInfo.loading = false
+        ElMessage({
+          message: res.msg + '!',
+          type: 'error',
+          dangerouslyUseHTMLString: true
+        })
+        resolve(false)
+        return
+      }
+      this.tableInfo.loading = false
+      ElMessage.success('修改成功~')
+      this.getDataList()
+      resolve(true)
+    })
+  }
 }
+
 export default TableView
