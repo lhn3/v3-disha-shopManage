@@ -35,10 +35,10 @@
               @onSubmit="drawerSubmit">
     <el-form ref="formRef" :model="state.formData" :rules="state.rules" label-width="100px">
       <el-form-item prop="title" label="公告标题：">
-        <el-input v-model.trim="state.formData.title" placeholder="请输入公告标题" clearable/>
+        <el-input v-model.trim="state.formData.title" placeholder="请输入" clearable/>
       </el-form-item>
       <el-form-item prop="content" label="公告内容：">
-        <el-input type="textarea" placeholder="请输入公告内容" v-model="state.formData.content"
+        <el-input type="textarea" placeholder="请输入" v-model="state.formData.content"
                   maxlength="200" show-word-limit :rows="5" clearable/>
       </el-form-item>
     </el-form>

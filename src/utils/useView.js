@@ -26,6 +26,7 @@ class TableView {
     loading: false, //确定按钮loading
     dataForm: {}, //高级搜索数据
     dataList: [], //获取到的分页数据
+    ids: [],
     page: 1,
     limit: 10,
     total: 0
@@ -127,11 +128,14 @@ class TableView {
 
   //删除
   deleteHandle = async id => {
+    if (!Array.isArray(id) && typeof id === "object" && this.tableInfo.ids.length === 0) return ElMessage.error('请先选择要删除的数据！')
     messageBox('确认删除？').then(async r => {
       if (!r) return
-      let res = await myAxios.post({
-        url: `${this.tableInfo.deleteUrl}/${id}/delete`
-      })
+      let res = Array.isArray(id)
+        ? await myAxios.post({url: `${this.tableInfo.deleteUrl}/delete_all`, data: {ids: id}})
+        : typeof id === "object"
+          ? await myAxios.post({url: `${this.tableInfo.deleteUrl}/delete_all`, data: {ids: this.tableInfo.ids}})
+          : await myAxios.post({url: `${this.tableInfo.deleteUrl}/${id}/delete`})
       if (res.code !== 200) {
         return ElMessage({
           message: res.msg + '!',
@@ -142,6 +146,11 @@ class TableView {
       ElMessage.success('删除成功~')
       this.getDataList()
     })
+  }
+
+  //多选
+  selectHandel = selection => {
+    this.tableInfo.ids = selection.map(item => item.id)
   }
 
   //获取其他信息

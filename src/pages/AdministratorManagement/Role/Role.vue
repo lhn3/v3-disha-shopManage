@@ -94,8 +94,7 @@ const state = reactive({
     rules: []
   },
   rules: {
-    name: {required: true, message: '请输入必填项', trigger: 'blur'},
-    desc: {required: true, message: '请输入必填项', trigger: 'blur'}
+    name: {required: true, message: '请输入必填项', trigger: 'blur'}
   }
 })
 
