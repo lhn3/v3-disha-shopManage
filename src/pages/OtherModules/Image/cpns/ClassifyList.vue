@@ -180,8 +180,4 @@ defineExpose({
   border-top: 1px solid #eeeeee;
 @apply flex items-center justify-center;
 }
-:deep(.el-input-number__decrease), :deep(.el-input-number__increase) {
-  top: 2px !important;
-  bottom: 2px !important;
-}
 </style>

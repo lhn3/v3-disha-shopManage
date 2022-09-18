@@ -1,5 +1,5 @@
 <template>
-  <div class="sku">
+  <div class="skus">
     <div class="button">
       <div>
         <el-button type="primary" @click="openDrawer">新增</el-button>
@@ -136,7 +136,7 @@ const drawerSubmit = () => {
 </script>
 
 <style scoped lang="less">
-.sku {
+.skus {
   padding: 20px;
   .button {
     display: flex;

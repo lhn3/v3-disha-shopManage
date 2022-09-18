@@ -1,22 +1,22 @@
 <template>
   <el-drawer
       ref="drawerRef"
-      v-model="moduleValue"
-      :title="title"
+      v-model="props.moduleValue"
+      :title="props.title"
       direction="rtl"
-      :close-on-click-modal="closeOnClickModal"
-      :before-close="cancel"
-      :width="width"
-      :destroy-on-close="destroyOnClose"
-      :close-on-press-escape="closeOnPressEscape"
+      :close-on-click-modal="props.closeOnClickModal"
+      :before-close="props.cancel"
+      :size="props.width"
+      :destroy-on-close="props.destroyOnClose"
+      :close-on-press-escape="props.closeOnPressEscape"
   >
     <div class="main">
       <div class="body">
         <slot/>
       </div>
-      <div class="btn" v-if="showBtn">
+      <div class="btn" v-if="props.showBtn">
         <el-button class="w-[60px]" type="default" @click="cancel">取消</el-button>
-        <el-button :loading="loading" class="w-[60px]" color="#6366f1" type="primary" @click="confirm">确定</el-button>
+        <el-button :loading="props.loading" class="w-[60px]" color="#6366f1" type="primary" @click="confirm">确定</el-button>
       </div>
     </div>
   </el-drawer>
