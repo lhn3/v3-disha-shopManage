@@ -3,8 +3,9 @@
     <el-tabs v-model="state.dataForm.tab" @tab-change="_table.getDataList">
       <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabs" :key="item.name"/>
     </el-tabs>
-    <div class="search">
-      <div class="search-item">
+
+    <Search @reset="reset" @search="_table.search" @refresh="_table.getDataList">
+      <template #search>
         <el-form-item label="商品名称：">
           <el-input placeholder="请输入" v-model="state.dataForm.title" clearable/>
         </el-form-item>
@@ -13,23 +14,15 @@
             <el-option v-for="item in state.cates" :key="item.id" :label="item.name" :value="item.id" />
           </el-select>
         </el-form-item>
-      </div>
-      <div>
-        <el-button type="primary" @click="_table.search">搜索</el-button>
-        <el-button @click="reset">重置</el-button>
-      </div>
-    </div>
-    <div class="button">
-      <div>
+      </template>
+      <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
         <el-button type="danger" @click="_table.deleteHandle" v-if="state.dataForm.tab !== 'delete'">批量删除</el-button>
         <el-button type="success" @click="_table.changeStatus(1)" plain v-if="state.dataForm.tab !== 'delete'">上架</el-button>
         <el-button type="warning" @click="_table.changeStatus(0)" plain v-if="state.dataForm.tab !== 'delete'">下架</el-button>
-      </div>
-      <el-tooltip effect="dark" content="刷新" placement="top-start">
-        <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="_table.getDataList"/>
-      </el-tooltip>
-    </div>
+      </template>
+    </Search>
+
     <el-table height="calc(100vh - 374px)" border :data="_table.tableInfo.dataList" style="width: 100%"
               @selection-change="_table.selectHandel" @cell-dblclick="editDrawer">
       <el-table-column type="selection" width="50" align="center"/>
@@ -147,7 +140,7 @@
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
-import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
+import Search from '@/components/Search.vue'
 import {onMounted, reactive, ref} from "vue";
 import Image from '@/pages/OtherModules/Image/Image.vue'
 import TableView from "@/utils/useView.js";
@@ -268,24 +261,6 @@ const avatarDelete = () => {
 <style scoped lang="less">
 .goods {
   padding: 20px;
-  .search {
-    display: flex;
-    justify-content: space-between;
-    .search-item{
-      display: flex;
-      .el-form-item {
-        margin-right: 20px;
-        :deep(.el-input__wrapper) {
-          width: 200px;
-        }
-      }
-    }
-  }
-  .button {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 20px;
-  }
   .pagination {
     margin-top: 10px;
     display: flex;

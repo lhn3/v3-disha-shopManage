@@ -1,20 +1,16 @@
 <template>
   <div class="manager">
-    <div class="search">
-      <el-form-item label="管理员昵称：">
-        <el-input placeholder="请输入" v-model="state.dataForm.keyword" clearable/>
-      </el-form-item>
-      <div>
-        <el-button type="primary" @click="_table.search">搜索</el-button>
-        <el-button @click="_table.reset">重置</el-button>
-      </div>
-    </div>
-    <div class="button">
-      <el-button type="primary" @click="openDrawer">新增</el-button>
-      <el-tooltip effect="dark" content="刷新" placement="top-start">
-        <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="_table.getDataList"/>
-      </el-tooltip>
-    </div>
+    <Search @reset="_table.reset" @search="_table.search" @refresh="_table.getDataList">
+      <template #search>
+        <el-form-item label="管理员昵称：">
+          <el-input placeholder="请输入" v-model="state.dataForm.keyword" clearable/>
+        </el-form-item>
+      </template>
+      <template #button>
+        <el-button type="primary" @click="openDrawer">新增</el-button>
+      </template>
+    </Search>
+
     <el-table height="calc(100vh - 320px)" :data="_table.tableInfo.dataList" style="width: 100%">
       <el-table-column prop="title" label="管理员" header-align="center">
         <template #default="{ row }">
@@ -117,6 +113,7 @@
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
+import Search from '@/components/Search.vue'
 import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
 import {onMounted, reactive, ref} from "vue";
 import Image from '@/pages/OtherModules/Image/Image.vue'
@@ -220,15 +217,6 @@ const avatarDelete = () => {
 <style scoped lang="less">
 .manager {
   padding: 20px;
-  .search {
-    display: flex;
-    justify-content: space-between;
-  }
-  .button {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 20px;
-  }
   .pagination {
     margin-top: 10px;
     display: flex;

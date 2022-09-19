@@ -1,15 +1,12 @@
 <template>
   <div class="coupon">
-    <div class="button">
-      <el-button type="primary" @click="openDrawer">新增</el-button>
-      <el-tooltip
-          effect="dark"
-          content="刷新"
-          placement="top-start"
-      >
-        <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="_table.getDataList()"/>
-      </el-tooltip>
-    </div>
+    <Search @refresh="_table.getDataList">
+      <template #button>
+        <el-button type="primary" @click="openDrawer">新增</el-button>
+        <el-button type="danger" @click="_table.deleteHandle">批量删除</el-button>
+      </template>
+    </Search>
+
     <el-table height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" style="width: 100%">
       <el-table-column label="优惠券名称" header-align="center" width="370px">
         <template #default="{ row }">
@@ -108,7 +105,7 @@
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
-import {Refresh} from '@element-plus/icons-vue'
+import Search from '@/components/Search.vue'
 import {onMounted, reactive, ref} from "vue";
 import TableView from '@/utils/useView.js'
 import {messageBox} from "@/utils/message.js";
@@ -237,11 +234,6 @@ const drawerSubmit = () => {
 <style scoped lang="less">
 .coupon {
   padding: 20px;
-  .button {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 20px;
-  }
   .pagination {
     margin-top: 10px;
     display: flex;

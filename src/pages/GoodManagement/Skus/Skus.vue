@@ -1,18 +1,12 @@
 <template>
   <div class="skus">
-    <div class="button">
-      <div>
+    <Search @refresh="_table.getDataList">
+      <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
         <el-button type="danger" @click="_table.deleteHandle">批量删除</el-button>
-      </div>
-      <el-tooltip
-          effect="dark"
-          content="刷新"
-          placement="top-start"
-      >
-        <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="_table.getDataList()"/>
-      </el-tooltip>
-    </div>
+      </template>
+    </Search>
+
     <el-table ref="tableRef" height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" border style="width: 100%"
               @cell-dblclick="editDrawer" @selection-change="_table.selectHandel">
       <el-table-column type="selection" width="50" align="center" />
@@ -63,7 +57,7 @@
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
-import {Refresh} from '@element-plus/icons-vue'
+import Search from '@/components/Search.vue'
 import {onMounted, reactive, ref} from "vue";
 import TableView from '@/utils/useView.js'
 import TagInput from '@/components/TagInput.vue'
@@ -138,11 +132,6 @@ const drawerSubmit = () => {
 <style scoped lang="less">
 .skus {
   padding: 20px;
-  .button {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 20px;
-  }
   .pagination {
     margin-top: 10px;
     display: flex;
