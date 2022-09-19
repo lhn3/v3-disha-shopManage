@@ -19,6 +19,18 @@
   }
 }
 
+//一行显示
+.text-ellipsis {
+  overflow: hidden;
+  /* 显示省略号 */
+  text-overflow: ellipsis;
+  /* 最多1行 */
+  -webkit-line-clamp: 1;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  white-space: normal;
+}
+
 //全局滚动条样式
 ::-webkit-scrollbar {
   background-color: #f4f4f4!important;
@@ -51,6 +63,13 @@
 .el-input-number__decrease, .el-input-number__increase {
   top: 2px !important;
   bottom: 2px !important;
+}
+
+//button取消hover,focus,active
+.el-button:hover, .el-button:active, .el-button:focus {
+  color: var(--el-button-text-color);
+  border-color: var(--el-button-border-color);
+  background-color: var(--el-button-bg-color);
 }
 
 //弹出框样式

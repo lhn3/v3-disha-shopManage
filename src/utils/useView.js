@@ -62,11 +62,13 @@ class TableView {
   }
 
   //改变状态
-  changeStatus = async (value, id) => {
-    let res = await myAxios.post({
-      url: `${this.tableInfo.url}/${id}/update_status`,
-      data: {status: value}
-    })
+  changeStatus = async (value, id = null) => {
+    if (!id && this.tableInfo.ids.length === 0) return ElMessage.error('请先选择数据！')
+    let res = !id
+      ? await myAxios.post({url: `${this.tableInfo.url}/changestatus`, data: {ids: this.tableInfo.ids, status: value}})
+      : Array.isArray(id)
+        ? await myAxios.post({url: `${this.tableInfo.url}/changestatus`, data: {ids: id, status: value}})
+        : await myAxios.post({url: `${this.tableInfo.url}/${id}/update_status`, data: {status: value}})
     if (res.code !== 200) {
       this.getDataList()
       return ElMessage({
@@ -75,6 +77,7 @@ class TableView {
         dangerouslyUseHTMLString: true
       })
     }
+    this.getDataList()
     ElMessage.success('状态更新成功~')
   }
 

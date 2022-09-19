@@ -40,7 +40,7 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
         <template #default="{ row }">
-          <el-button type="text" @click="editManager(row)" :disabled="row.super === 1">修改</el-button>
+          <el-button type="text" @click="editDrawer(row)" :disabled="row.super === 1">修改</el-button>
           <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)"
                      :disabled="row.super === 1">删除
           </el-button>
@@ -168,7 +168,7 @@ const openDrawer = () => {
 }
 
 //修改
-const editManager = (row) => {
+const editDrawer = (row) => {
   state.title = '修改公告'
   state.id = row.id
   state.formData.username = row.username

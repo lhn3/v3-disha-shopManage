@@ -7,7 +7,7 @@
       </el-tooltip>
     </div>
     <el-table height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" style="width: 100%"
-              @cell-dblclick="editNotice">
+              @cell-dblclick="editDrawer">
       <el-table-column prop="name" label="角色名称" header-align="center" align="center"/>
       <el-table-column prop="desc" label="角色描述" header-align="center" align="center"/>
       <el-table-column prop="status" label="状态" header-align="center" align="center">
@@ -19,7 +19,7 @@
       <el-table-column label="操作" fixed="right" width="180px" header-align="center" align="center">
         <template #default="{ row }">
           <el-button type="text" @click="editAccess(row)">配置权限</el-button>
-          <el-button type="text" @click="editNotice(row)">修改</el-button>
+          <el-button type="text" @click="editDrawer(row)">修改</el-button>
           <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -123,7 +123,7 @@ const editAccess = (row) => {
 }
 
 //修改
-const editNotice = (row) => {
+const editDrawer = (row) => {
   state.title = '修改用户'
   state.id = row.id
   state.formData.name = row.name

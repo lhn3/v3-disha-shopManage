@@ -14,8 +14,8 @@
       </el-tooltip>
     </div>
     <el-table ref="tableRef" height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" border style="width: 100%"
-              @cell-dblclick="editNotice" @selection-change="_table.selectHandel">
-      <el-table-column type="selection" width="55" />
+              @cell-dblclick="editDrawer" @selection-change="_table.selectHandel">
+      <el-table-column type="selection" width="50" align="center" />
       <el-table-column prop="name" label="规格名称" header-align="center" align="center"/>
       <el-table-column prop="default" label="规格值" header-align="center" align="center"/>
       <el-table-column prop="order" label="排序" header-align="center" align="center"/>
@@ -27,7 +27,7 @@
       </el-table-column>
       <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
         <template #default="{ row }">
-          <el-button type="text" @click="editNotice(row)">修改</el-button>
+          <el-button type="text" @click="editDrawer(row)">修改</el-button>
           <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle([row.id])">删除</el-button>
         </template>
       </el-table-column>
@@ -105,7 +105,7 @@ const openDrawer = () => {
 }
 
 //修改
-const editNotice = (row) => {
+const editDrawer = (row) => {
   state.title = '修改公告'
   state.id = row.id
   state.formData.name = row.name

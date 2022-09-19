@@ -27,8 +27,8 @@
           <span @click.stop="() => {}">
             <el-switch v-model="data.status" style="margin-right: 10px" :active-value="1" :inactive-value="0"
                        @change="(value) => _table.changeStatus(value,data.id)"/>
-            <el-button type="text" @click="editManager(data)">修改</el-button>
-            <el-button v-if="data.menu" type="text" @click="addEditManager(data)">增加</el-button>
+            <el-button type="text" @click="editDrawer(data)">修改</el-button>
+            <el-button v-if="data.menu" type="text" @click="addEditAccess(data)">增加</el-button>
             <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(data.id)">删除</el-button>
           </span>
         </span>
@@ -132,7 +132,7 @@ const openDrawer = () => {
 }
 
 //修改
-const editManager = (row) => {
+const editDrawer = (row) => {
   state.title = '修改权菜单/权限'
   state.id = row.id
   state.formData.rule_id = row.rule_id
@@ -147,7 +147,7 @@ const editManager = (row) => {
 }
 
 //增加
-const addEditManager = (row) => {
+const addEditAccess = (row) => {
   console.log(row)
   state.title = '增加子菜单/权限'
   state.formData.rule_id = row.id

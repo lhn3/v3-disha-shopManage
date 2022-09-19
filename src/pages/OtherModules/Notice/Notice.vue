@@ -11,13 +11,13 @@
       </el-tooltip>
     </div>
     <el-table height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" border style="width: 100%"
-              @cell-dblclick="editNotice">
+              @cell-dblclick="editDrawer">
       <el-table-column prop="title" label="公告标题" header-align="center" align="center"/>
       <el-table-column prop="content" label="公告内容" header-align="center" align="center"/>
       <el-table-column prop="update_time" label="发布时间" header-align="center" align="center"/>
       <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
         <template #default="{ row }">
-          <el-button type="text" @click="editNotice(row)">修改</el-button>
+          <el-button type="text" @click="editDrawer(row)">修改</el-button>
           <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -83,7 +83,7 @@ const openDrawer = () => {
 }
 
 //修改
-const editNotice = (row) => {
+const editDrawer = (row) => {
   state.title = '修改公告'
   state.id = row.id
   state.formData.title = row.title

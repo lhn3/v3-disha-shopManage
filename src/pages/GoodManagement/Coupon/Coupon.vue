@@ -36,7 +36,7 @@
       <el-table-column prop="used" label="已使用" header-align="center" align="center"/>
       <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
         <template #default="{ row }">
-          <el-button type="text" v-if="formatStatus(row) === '未开始'" @click="editNotice(row)">修改</el-button>
+          <el-button type="text" v-if="formatStatus(row) === '未开始'" @click="editDrawer(row)">修改</el-button>
           <el-button type="text"
                      v-if="formatStatus(row) !== '进行中'" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">
             删除
@@ -176,7 +176,7 @@ const openDrawer = () => {
 }
 
 //修改
-const editNotice = (row) => {
+const editDrawer = (row) => {
   state.title = '修改公告'
   state.id = row.id
   state.formData.name = row.name
@@ -213,10 +213,7 @@ const drawerClose = () => {
 //失效按钮
 const changeStatus = (id) => {
   messageBox('确认使优惠券失效！').then(async res => {
-    if (res) {
-      await _table.changeStatus(0, id)
-      _table.getDataList()
-    }
+    if (res) _table.changeStatus(0, id)
   })
 }
 
