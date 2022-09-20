@@ -6,50 +6,56 @@
           <el-input placeholder="请输入" v-model="state.dataForm.keyword" clearable/>
         </el-form-item>
       </template>
+
       <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
       </template>
+
+      <template #table>
+        <el-table height="calc(100vh - 320px)" :data="_table.tableInfo.dataList" style="width: 100%">
+          <el-table-column prop="title" label="管理员" header-align="center">
+            <template #default="{ row }">
+              <div style="display: flex;padding: 5px">
+                <el-image :src="row.avatar" fit="cover" style="width: 50px;height: 50px;border-radius: 25px"/>
+                <div style="padding-left: 20px">
+                  <div style="line-height: 25px">{{ row.username }}</div>
+                  <div style="line-height: 25px">ID：{{ row.id }}</div>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="content" label="所属管理员" header-align="center" align="center">
+            <template #default="{ row }">
+              {{ row.role.name }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="状态" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-switch v-model="row.status" :active-value="1" :inactive-value="0"
+                         @change="(value) => _table.changeStatus(value, row.id)" :disabled="row.super === 1"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-button type="text" @click="editDrawer(row)" :disabled="row.super === 1">修改</el-button>
+              <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)"
+                         :disabled="row.super === 1">删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+
+      <template #pagination>
+        <el-pagination background
+                       :current-page="_table.tableInfo.page"
+                       :page-size="_table.tableInfo.limit"
+                       :total="_table.tableInfo.total"
+                       layout="prev, pager, next"
+                       @current-change="_table.pageCurrentChangeHandle"/>
+      </template>
     </Search>
 
-    <el-table height="calc(100vh - 320px)" :data="_table.tableInfo.dataList" style="width: 100%">
-      <el-table-column prop="title" label="管理员" header-align="center">
-        <template #default="{ row }">
-          <div style="display: flex;padding: 5px">
-            <el-image :src="row.avatar" fit="cover" style="width: 50px;height: 50px;border-radius: 25px"/>
-            <div style="padding-left: 20px">
-              <div style="line-height: 25px">{{ row.username }}</div>
-              <div style="line-height: 25px">ID：{{ row.id }}</div>
-            </div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="content" label="所属管理员" header-align="center" align="center">
-        <template #default="{ row }">
-          {{ row.role.name }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-switch v-model="row.status" :active-value="1" :inactive-value="0"
-                     @change="(value) => _table.changeStatus(value, row.id)" :disabled="row.super === 1"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-button type="text" @click="editDrawer(row)" :disabled="row.super === 1">修改</el-button>
-          <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)"
-                     :disabled="row.super === 1">删除
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination class="pagination"
-                   background
-                   :current-page="_table.tableInfo.page"
-                   :page-size="_table.tableInfo.limit"
-                   :total="_table.tableInfo.total"
-                   layout="prev, pager, next"
-                   @current-change="_table.pageCurrentChangeHandle"/>
   </div>
 
   <!--  抽屉-->
@@ -64,30 +70,7 @@
                   maxlength="200" show-word-limit :rows="5" clearable/>
       </el-form-item>
       <el-form-item prop="avatar" label="头像：">
-        <div class="avatar avatarPlus" style="cursor: pointer" v-if="!state.formData.avatar"
-             @click="chooseImageVisible = true">
-          <el-icon>
-            <Plus/>
-          </el-icon>
-          {{ state.formData.avatar }}
-        </div>
-        <div class="avatar avatarControl" v-else>
-          <el-image :src=state.formData.avatar fit="cover" style="width: 100%;height: 100%"/>
-          <div class="cover">
-            <el-icon style="cursor: pointer" @click="avatarDialog">
-              <ZoomIn/>
-            </el-icon>
-            <el-icon style="cursor: pointer" @click="chooseImageVisible = true">
-              <Refresh/>
-            </el-icon>
-            <el-icon style="cursor: pointer" @click="avatarDelete">
-              <Delete/>
-            </el-icon>
-          </div>
-        </div>
-        <el-dialog v-model="state.formData.dialogVisible">
-          <img w-full :src="state.formData.dialogImageUrl" alt="Preview Image"/>
-        </el-dialog>
+        <ImageSelect v-model="state.formData.avatar" />
       </el-form-item>
       <el-form-item prop="role_id" label="所属管理员：">
         <el-select v-model="state.formData.role_id" placeholder="请选择" clearable>
@@ -104,23 +87,16 @@
       </el-form-item>
     </el-form>
   </FormDrawer>
-
-  <!--  选择图片弹窗-->
-  <el-dialog width="70vw" custom-class="custom-dialog" v-model="chooseImageVisible" title="图片选择">
-    <Image v-if="chooseImageVisible" :is-component="true" @chooseImage="chooseImage"/>
-  </el-dialog>
 </template>
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
 import Search from '@/components/Search.vue'
-import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
+import ImageSelect from '@/components/ImageSelect.vue'
 import {onMounted, reactive, ref} from "vue";
-import Image from '@/pages/OtherModules/Image/Image.vue'
 import TableView from "@/utils/useView.js";
 
 const formRef = ref()
-const chooseImageVisible = ref(false)
 const state = reactive({
   url: '/admin/manager',
   deleteUrl: '/admin/manager',
@@ -138,9 +114,7 @@ const state = reactive({
     password: '',
     avatar: '',
     role_id: '',
-    status: '',
-    dialogImageUrl: '',
-    dialogVisible: false,
+    status: ''
   },
   rules: {
     username: {required: true, message: '请输入必填项', trigger: 'blur'},
@@ -195,74 +169,10 @@ const drawerSubmit = () => {
     if (res) drawerClose()
   })
 }
-
-//选择头像
-const chooseImage = url => {
-  state.formData.avatar = url
-  chooseImageVisible.value = false
-}
-
-//上传的头像查看大图
-const avatarDialog = () => {
-  state.formData.dialogImageUrl = state.formData.avatar
-  state.formData.dialogVisible = true
-}
-
-//删除头像
-const avatarDelete = () => {
-  state.formData.avatar = ''
-}
 </script>
 
 <style scoped lang="less">
 .manager {
   padding: 20px;
-  .pagination {
-    margin-top: 10px;
-    display: flex;
-    justify-content: center;
-  }
-}
-.avatar {
-  width: 150px;
-  height: 150px;
-  border: 1px dashed #c3c4c8;
-  border-radius: 6px;
-}
-.avatarPlus {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f6f5f5;
-  font-size: 34px;
-  color: #aaaaaa;
-  cursor: pointer;
-}
-.avatarPlus:hover {
-  background-color: #ececec;
-  color: #807f7f;
-}
-.avatarControl {
-  position: relative;
-  overflow: hidden;
-  .cover {
-    width: 150px;
-    height: 150px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    font-size: 24px;
-    display: none;
-    justify-content: space-around;
-    align-items: center;
-    color: #ffffff;
-    padding: 0 20px;
-  }
-}
-.avatarControl:hover {
-  .cover {
-    display: flex;
-  }
 }
 </style>
