@@ -1,22 +1,25 @@
 <template>
-  <div class="image imagePlus" style="cursor: pointer" v-if="!props.modelValue"
-       @click="chooseImageVisible = true">
-    <el-icon>
-      <Plus/>
-    </el-icon>
-    {{ props.modelValue }}
-  </div>
-  <div class="image imageControl" v-else>
-    <el-image :src=props.modelValue fit="cover" style="width: 100%;height: 100%"/>
-    <div class="cover">
-      <el-icon style="cursor: pointer" @click="imageDialog">
-        <ZoomIn/>
-      </el-icon>
-      <el-icon style="cursor: pointer" @click="chooseImageVisible = true">
-        <Refresh/>
-      </el-icon>
-      <el-icon style="cursor: pointer" @click="imageDelete">
-        <Delete/>
+  <div class="imageList">
+    <template v-if="props.modelValue?.length > 0">
+      <div class="image imageControl" v-for="(item,index) in props.modelValue" :key="index">
+        <el-image :src=item fit="cover" style="width: 100%;height: 100%"/>
+        <div class="cover">
+          <el-icon style="cursor: pointer" @click="imageDialog(item)">
+            <ZoomIn/>
+          </el-icon>
+          <el-icon v-if="!props.multiple" style="cursor: pointer" @click="chooseImageVisible = true">
+            <Refresh/>
+          </el-icon>
+          <el-icon style="cursor: pointer" @click="imageDelete(index)">
+            <Delete/>
+          </el-icon>
+        </div>
+      </div>
+    </template>
+    <div class="image imagePlus" style="cursor: pointer" v-if="props.modelValue?.length === 0 || props.multiple"
+         @click="chooseImageVisible = true">
+      <el-icon>
+        <Plus/>
       </el-icon>
     </div>
   </div>
@@ -26,7 +29,11 @@
 
   <!--  选择图片弹窗-->
   <el-dialog width="70vw" custom-class="custom-dialog" v-model="chooseImageVisible" title="图片选择">
-    <Image v-if="chooseImageVisible" :is-component="true" @chooseImage="chooseImage"/>
+    <Image v-if="chooseImageVisible" :multiple="multiple" :is-component="true" @chooseImage="chooseImage"/>
+    <template #footer>
+      <el-button type="primary" @click="cancel">取消</el-button>
+      <el-button type="success" v-if="props.multiple" @click="chooseImages">确定</el-button>
+    </template>
   </el-dialog>
 </template>
 
@@ -36,35 +43,66 @@ import Image from '@/pages/OtherModules/Image/Image.vue'
 import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
 
 const props = defineProps({
-  modelValue: String,
-  default: ''
+  modelValue: {
+    type: Array,
+    default: () => []
+  },
+  default: '',
+  multiple: {
+    type: Boolean,
+    default: false
+  }
 })
 const emit = defineEmits(['update:modelValue'])
 const chooseImageVisible = ref(false)
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
+const selectList = ref([]) //多选的值
 
 //上传的头像查看大图
-const imageDialog = () => {
-  dialogImageUrl.value = props.modelValue
+const imageDialog = item => {
+  dialogImageUrl.value = item
   dialogVisible.value = true
 }
 
 //选择头像
-const chooseImage = url => {
-  emit('update:modelValue', url)
+const chooseImage = urlList => {
+  if (props.multiple) {
+    selectList.value = urlList
+  } else {
+    emit('update:modelValue', urlList)
+    chooseImageVisible.value = false
+  }
+}
+
+//选择多图片
+const chooseImages = () => {
+  emit('update:modelValue', [...props.modelValue, ...selectList.value])
   chooseImageVisible.value = false
 }
 
 //删除头像
-const imageDelete = () => {
-  emit('update:modelValue', '')
+const imageDelete = index => {
+  let newList = props.modelValue.filter((item,i) => {
+    return i !== index
+  })
+  emit('update:modelValue', newList)
 }
 
+const cancel = () => {
+  selectList.value = []
+  chooseImageVisible.value = false
+}
 </script>
 
 <style scoped lang="less">
+.imageList {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
 .image {
+  margin: 0 10px 10px 0;
   width: 150px;
   height: 150px;
   border: 1px dashed #c3c4c8;

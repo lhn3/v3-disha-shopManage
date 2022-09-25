@@ -9,8 +9,12 @@
             <el-button type="text" class="image-cart-btn1" @click="rename(item)">重命名</el-button>
             <el-button type="text" class="image-cart-btn2" @click="delImage(item.id)">删除</el-button>
           </div>
-          <div class="image-cart-btns" style="cursor:pointer;" @click="chooseImage(item.url)" v-else>
+          <div class="image-cart-btns" style="cursor:pointer;" @click="chooseImage([item.url])"
+               v-if="props.isComponent && !props.multiple">
             <el-button type="text">选择图片</el-button>
+          </div>
+          <div class="image-cart-btns" style="cursor:pointer;" v-if="props.isComponent && props.multiple">
+            <el-checkbox size="large" @change="value => chooseImages(value, item.url)"/>
           </div>
         </el-card>
       </el-col>
@@ -53,7 +57,11 @@ import {ElLoading} from 'element-plus/lib'
 import {inputMessageBox, messageBox} from "@/utils/message.js";
 
 const props = defineProps({
-  isComponent:{
+  isComponent: {
+    type: Boolean,
+    default: false
+  },
+  multiple: {
     type: Boolean,
     default: false
   }
@@ -68,18 +76,19 @@ let state = reactive({
   currentPage: 1,
   pageSize: 10,
   imageList: [], //图片列表
-  totalCount: 0 //图片总数
+  totalCount: 0, //图片总数
+  selectList: [], //多选的图片列表
 })
 
 //获取图片列表
 const getImage = async (id) => {
+  state.selectList = []
   let res = await getImageList({id, page: state.currentPage, limit: state.pageSize})
   if (res.code !== 200) {
     return ElMessage.error(res.msg + '!')
   }
   state.imageList = res.data.list
   state.totalCount = res.data.totalCount
-  console.log(state.imageList)
 }
 
 // 点击分页
@@ -145,8 +154,21 @@ const uploadError = error => {
   ElMessage.error(JSON.parse(error.message).msg || '上传失败')
 }
 
+//单选图片
 const chooseImage = (url) => {
-  emit('chooseImageMiddle',url)
+  emit('chooseImageMiddle', url)
+}
+
+//多选图片
+const chooseImages = (value, url) => {
+  if (value) {
+    state.selectList.push(url)
+  } else {
+    state.selectList = state.selectList.filter(item => {
+      return item !== url
+    })
+  }
+  emit('chooseImageMiddle', state.selectList)
 }
 
 defineExpose({

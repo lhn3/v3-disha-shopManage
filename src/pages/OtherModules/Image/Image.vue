@@ -6,10 +6,11 @@
     </el-header>
     <el-container class="image-container">
       <el-aside class="image-aside" width="250px">
-        <ClassifyList ref="classifyRef" @handelInfo="handelInfo" :is-component="props.isComponent" />
+        <ClassifyList ref="classifyRef" @handelInfo="handelInfo" :is-component="props.isComponent"/>
       </el-aside>
       <el-main class="image-main">
-        <ImageList ref="imageListRef" :is-component="props.isComponent" @chooseImageMiddle="chooseImageMiddle" />
+        <ImageList ref="imageListRef" :multiple="multiple" :is-component="props.isComponent"
+                   @chooseImageMiddle="chooseImageMiddle"/>
       </el-main>
     </el-container>
   </el-container>
@@ -18,10 +19,14 @@
 <script setup>
 import ClassifyList from './cpns/ClassifyList.vue'
 import ImageList from './cpns/ImageList.vue'
-import {ref,defineProps,defineEmits} from "vue";
+import {ref, defineProps, defineEmits} from "vue";
 
 const props = defineProps({
-  isComponent:{
+  isComponent: {
+    type: Boolean,
+    default: false
+  },
+  multiple: {
     type: Boolean,
     default: false
   }
@@ -38,7 +43,7 @@ const handelInfo = id => {
 
 //打开右侧抽屉
 const openDrawer = type => {
-  if (type === 'classify'){
+  if (type === 'classify') {
     classifyRef.value.formData.order = classifyRef.value.state.classify[0].order + 1
     classifyRef.value.formData.title = '新增分类'
     classifyRef.value.drawer = true
@@ -48,7 +53,7 @@ const openDrawer = type => {
 }
 
 const chooseImageMiddle = url => {
-  emit('chooseImage',url)
+  emit('chooseImage', url)
 }
 </script>
 

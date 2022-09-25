@@ -70,7 +70,7 @@
                   maxlength="200" show-word-limit :rows="5" clearable/>
       </el-form-item>
       <el-form-item prop="avatar" label="头像：">
-        <ImageSelect v-model="state.formData.avatar" />
+        <ImageSelect v-model="state.formData.avatar"/>
       </el-form-item>
       <el-form-item prop="role_id" label="所属管理员：">
         <el-select v-model="state.formData.role_id" placeholder="请选择" clearable>
@@ -112,7 +112,7 @@ const state = reactive({
   formData: { //新增修改数据
     username: '',
     password: '',
-    avatar: '',
+    avatar: [],
     role_id: '',
     status: ''
   },
@@ -144,7 +144,7 @@ const editDrawer = (row) => {
   state.id = row.id
   state.formData.username = row.username
   state.formData.password = row.password
-  state.formData.avatar = row.avatar
+  state.formData.avatar = [row.avatar]
   state.formData.role_id = row.role.id
   state.formData.status = row.status
   state.drawer = true
@@ -157,7 +157,7 @@ const drawerClose = () => {
   state.id = null
   state.formData.username = ''
   state.formData.password = ''
-  state.formData.avatar = ''
+  state.formData.avatar = []
   state.formData.role_id = ''
   state.formData.status = ''
   state.drawer = false
@@ -165,7 +165,7 @@ const drawerClose = () => {
 
 //提交
 const drawerSubmit = () => {
-  _table.addOrUpdate(formRef.value, state.formData, state.id).then(res => {
+  _table.addOrUpdate(formRef.value, {...state.formData, avatar: state.formData.avatar[0]}, state.id).then(res => {
     if (res) drawerClose()
   })
 }

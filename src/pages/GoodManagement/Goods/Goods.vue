@@ -20,10 +20,14 @@
         <el-button type="primary" @click="openDrawer">新增</el-button>
         <el-button type="danger" @click="_table.deleteHandle" v-if="state.dataForm.tab !== 'delete'">批量删除
         </el-button>
-        <el-button type="success" @click="_table.changeStatus(1)" plain v-if="state.dataForm.tab !== 'delete'">上架
+        <el-button type="success" @click="_table.changeStatus(1)" plain
+                   v-if="['all','off'].includes(state.dataForm.tab)">上架
         </el-button>
-        <el-button type="warning" @click="_table.changeStatus(0)" plain v-if="state.dataForm.tab !== 'delete'">下架
+        <el-button type="warning" @click="_table.changeStatus(0)" plain
+                   v-if="['all','saling'].includes(state.dataForm.tab)">下架
         </el-button>
+        <el-button type="success" v-if="['delete'].includes(state.dataForm.tab)">恢复商品</el-button>
+        <el-button type="warning" v-if="['delete'].includes(state.dataForm.tab)">彻底删除</el-button>
       </template>
 
       <template #table>
@@ -40,7 +44,7 @@
                   </div>
                   <div style="font-size: 14px"><span style="color: #f84141">￥{{ row.min_price }}</span> |
                     <span>￥{{ row.min_oprice }}</span></div>
-                  <div>分类：{{ row.category.name }}</div>
+                  <div>分类：{{ row.category?.name }}</div>
                   <div>创建时间：{{ row.create_time }}</div>
                 </div>
               </div>
@@ -70,7 +74,7 @@
             <template #default="{ row }">
               <el-button type="text" @click="editDrawer(row)">修改</el-button>
               <el-button type="text">商品规格</el-button>
-              <el-button type="text">商品轮播图</el-button>
+              <el-button type="text" @click="editBannerDrawer(row)">商品轮播图</el-button>
               <el-button type="text">商品详情</el-button>
               <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle([row.id])">删除</el-button>
             </template>
@@ -95,7 +99,8 @@
               @handleClose="drawerClose" @onSubmit="drawerSubmit">
     <el-form ref="formRef" :model="state.formData" :rules="state.rules" label-width="120px">
       <el-form-item prop="title" label="商品名称：">
-        <el-input v-model.trim="state.formData.title" placeholder="请输入" maxlength="50" style="width: 200px" clearable/>
+        <el-input v-model.trim="state.formData.title" placeholder="请输入" maxlength="50" style="width: 200px"
+                  clearable/>
       </el-form-item>
       <el-form-item prop="category_id" label="分类：">
         <el-select v-model="state.formData.category_id" placeholder="请选择" style="width: 200px" filterable clearable>
@@ -139,23 +144,23 @@
         <el-input type="textarea" placeholder="请输入" v-model="state.formData.desc"
                   maxlength="200" show-word-limit :rows="5" input-style="width: 280px" clearable/>
       </el-form-item>
-      <el-form-item prop="status" label="状态：">
+      <el-form-item prop="status" label="是否上架：">
         <el-switch v-model="state.formData.status" :active-value="1" :inactive-value="0"/>
       </el-form-item>
     </el-form>
   </FormDrawer>
 
-  <!--  选择图片弹窗-->
-  <el-dialog width="70vw" custom-class="custom-dialog" v-model="chooseImageVisible" title="图片选择">
-    <Image v-if="chooseImageVisible" :is-component="true" @chooseImage="chooseImage"/>
-  </el-dialog>
+  <!--  轮播图-->
+  <FormDrawer width="40%" v-model="state.bannerDrawer" title="选择轮播图" @handleClose="bannerDrawerClose"
+              @onSubmit="bannerDrawerSubmit" :loading="_table.tableInfo.loading">
+    <ImageSelect v-model="state.bannerList" multiple/>
+  </FormDrawer>
 </template>
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
 import Search from '@/components/Search.vue'
 import {onMounted, reactive, ref} from "vue";
-import Image from '@/pages/OtherModules/Image/Image.vue'
 import TableView from "@/utils/useView.js";
 import ImageSelect from '@/components/ImageSelect.vue'
 
@@ -168,7 +173,6 @@ const tabs = ref([
   {label: '回收站', name: 'delete'},
 ])
 const formRef = ref()
-const chooseImageVisible = ref(false)
 const state = reactive({
   url: '/admin/goods',
   deleteUrl: '/admin/goods',
@@ -178,6 +182,8 @@ const state = reactive({
   title: '', //抽屉标题
   id: null, //修改的数据id
   drawer: false,  //抽屉显示隐藏
+  bannerDrawer: false,  //轮播图抽屉
+  bannerList: [],  //轮播图列表
   dataForm: { //搜索数据
     title: '',
     tab: 'all',
@@ -186,7 +192,7 @@ const state = reactive({
   formData: { //新增修改数据
     title: '',        //商品名称
     category_id: '',  //商品分类
-    cover: '',        //商品封面
+    cover: [],        //商品封面
     desc: '',         //商品描述
     unit: '',         //商品单位
     stock: 100,       //总库存
@@ -194,7 +200,8 @@ const state = reactive({
     status: 1,        //是否上架
     stock_display: 1, //是否显示
     min_price: 1,     //最低销售价
-    min_oprice: 0   //最低原价
+    min_oprice: 0,   //最低原价
+    order: 0
   },
   rules: {
     title: {required: true, message: '请输入必填项', trigger: 'blur'},
@@ -223,9 +230,26 @@ const reset = () => {
   _table.search()
 }
 
+//修改轮播图
+const editBannerDrawer = row => {
+  state.id = row.id
+  state.bannerList = row.goods_banner?.map(item => {
+    return item.url
+  })
+  state.bannerDrawer = true
+}
+
+//关闭轮播图抽屉
+const bannerDrawerClose = () => {
+  state.id = null
+  state.bannerList = []
+  state.bannerDrawer = false
+}
+
 //新增
 const openDrawer = () => {
   state.title = '新增商品'
+  state.formData.order = _table.tableInfo.dataList[0].order + 1 || 0
   state.drawer = true
 }
 
@@ -235,7 +259,7 @@ const editDrawer = (row) => {
   state.id = row.id
   state.formData.title = row.title
   state.formData.category_id = row.category_id
-  state.formData.cover = row.cover
+  state.formData.cover = [row.cover]
   state.formData.desc = row.desc
   state.formData.unit = row.unit
   state.formData.stock = row.stock
@@ -250,11 +274,12 @@ const editDrawer = (row) => {
 //关闭右侧抽屉
 const drawerClose = () => {
   formRef.value.resetFields()
+  state.drawer = false
   state.title = ''
   state.id = null
   state.formData.title = ''
   state.formData.category_id = ''
-  state.formData.cover = ''
+  state.formData.cover = []
   state.formData.desc = ''
   state.formData.unit = ''
   state.formData.stock = 100
@@ -263,31 +288,21 @@ const drawerClose = () => {
   state.formData.stock_display = 1
   state.formData.min_price = 1
   state.formData.min_oprice = 0
-  state.drawer = false
+  state.formData.order = 0
 }
 
 //提交
 const drawerSubmit = () => {
-  _table.addOrUpdate(formRef.value, state.formData, state.id).then(res => {
+  _table.addOrUpdate(formRef.value, {...state.formData, cover: state.formData.cover[0]}, state.id).then(res => {
     if (res) drawerClose()
   })
 }
 
-//选择头像
-const chooseImage = url => {
-  state.formData.avatar = url
-  chooseImageVisible.value = false
-}
-
-//上传的头像查看大图
-const avatarDialog = () => {
-  state.formData.dialogImageUrl = state.formData.avatar
-  state.formData.dialogVisible = true
-}
-
-//删除头像
-const avatarDelete = () => {
-  state.formData.avatar = ''
+//提交轮播图
+const bannerDrawerSubmit = () => {
+  _table.updateOther(`/admin/goods/banners/${state.id}`, {banners: state.bannerList}).then(res => {
+    if (res) bannerDrawerClose()
+  })
 }
 </script>
 
