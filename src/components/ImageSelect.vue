@@ -31,8 +31,8 @@
   <el-dialog width="70vw" custom-class="custom-dialog" v-model="chooseImageVisible" title="图片选择">
     <Image v-if="chooseImageVisible" :multiple="multiple" :is-component="true" @chooseImage="chooseImage"/>
     <template #footer>
-      <el-button type="primary" @click="cancel">取消</el-button>
-      <el-button type="success" v-if="props.multiple" @click="chooseImages">确定</el-button>
+      <el-button @click="cancel">取消</el-button>
+      <el-button type="primary" v-if="props.multiple" @click="chooseImages">确定</el-button>
     </template>
   </el-dialog>
 </template>

@@ -75,7 +75,7 @@
               <el-button type="text" @click="editDrawer(row)">修改</el-button>
               <el-button type="text">商品规格</el-button>
               <el-button type="text" @click="editBannerDrawer(row)">商品轮播图</el-button>
-              <el-button type="text">商品详情</el-button>
+              <el-button type="text" @click="openDetailDialog(row)">商品详情</el-button>
               <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle([row.id])">删除</el-button>
             </template>
           </el-table-column>
@@ -152,17 +152,21 @@
 
   <!--  轮播图-->
   <FormDrawer width="40%" v-model="state.bannerDrawer" title="选择轮播图" @handleClose="bannerDrawerClose"
-              @onSubmit="bannerDrawerSubmit" :loading="_table.tableInfo.loading">
+              @onSubmit="bannerDrawerSubmit" :loading="_table.tableInfo.loading" close-on-click-modal>
     <ImageSelect v-model="state.bannerList" multiple/>
   </FormDrawer>
+
+<!--  商品详情弹窗-->
+  <GoodsDetail v-model="state.detailDialog" :detail="state.detail" @refresh="_table.getDataList"/>
 </template>
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
 import Search from '@/components/Search.vue'
-import {onMounted, reactive, ref} from "vue";
+import {nextTick, onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
 import ImageSelect from '@/components/ImageSelect.vue'
+import GoodsDetail from '@/pages/GoodManagement/Goods/cpns/GoodsDetail.vue'
 
 const tabs = ref([
   {label: '全部', name: 'all'},
@@ -184,6 +188,8 @@ const state = reactive({
   drawer: false,  //抽屉显示隐藏
   bannerDrawer: false,  //轮播图抽屉
   bannerList: [],  //轮播图列表
+  detailDialog: false, //商品详情弹窗
+  detail: {}, //点击的商品详情
   dataForm: { //搜索数据
     title: '',
     tab: 'all',
@@ -219,7 +225,6 @@ let _table = new TableView(state)
 onMounted(() => {
   _table.getDataList().then(res => {
     state.cates = res.data.cates
-    console.log(res)
   })
 })
 
@@ -244,6 +249,15 @@ const bannerDrawerClose = () => {
   state.id = null
   state.bannerList = []
   state.bannerDrawer = false
+}
+
+//打开商品详情弹窗
+const openDetailDialog = row => {
+  state.detail = {}
+  nextTick(()=>{
+    state.detail = {content: row.content, id: row.id}
+    state.detailDialog = true
+  })
 }
 
 //新增
