@@ -1,5 +1,5 @@
 <template>
-  <div class="imageList">
+  <div class="imageList" v-show="props.show">
     <template v-if="props.modelValue?.length > 0">
       <div class="image imageControl" v-for="(item,index) in props.modelValue" :key="index">
         <el-image :src=item fit="cover" style="width: 100%;height: 100%"/>
@@ -31,14 +31,14 @@
   <el-dialog width="70vw" custom-class="custom-dialog" v-model="chooseImageVisible" title="图片选择">
     <Image v-if="chooseImageVisible" :multiple="multiple" :is-component="true" @chooseImage="chooseImage"/>
     <template #footer>
-      <el-button @click="cancel">取消</el-button>
+      <el-button @click="chooseImageVisible = false">取消</el-button>
       <el-button type="primary" v-if="props.multiple" @click="chooseImages">确定</el-button>
     </template>
   </el-dialog>
 </template>
 
 <script setup>
-import {ref, defineProps} from "vue";
+import {ref, defineProps, defineExpose, watch} from "vue";
 import Image from '@/pages/OtherModules/Image/Image.vue'
 import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
 
@@ -47,10 +47,13 @@ const props = defineProps({
     type: Array,
     default: () => []
   },
-  default: '',
   multiple: {
     type: Boolean,
     default: false
+  },
+  show: {
+    type:Boolean,
+    default: true
   }
 })
 const emit = defineEmits(['update:modelValue'])
@@ -77,7 +80,12 @@ const chooseImage = urlList => {
 
 //选择多图片
 const chooseImages = () => {
-  emit('update:modelValue', [...props.modelValue, ...selectList.value])
+  if (props.show) {
+    emit('update:modelValue', [...props.modelValue, ...selectList.value])
+  } else {
+    //提交才执行回调
+    callback.value(selectList.value)
+  }
   chooseImageVisible.value = false
 }
 
@@ -89,10 +97,22 @@ const imageDelete = index => {
   emit('update:modelValue', newList)
 }
 
-const cancel = () => {
-  selectList.value = []
-  chooseImageVisible.value = false
+//富文本专用回调
+const callback = ref(null) //先找个变量接收回调函数
+const editorFunc = func => {
+  callback.value = func
+  chooseImageVisible.value = true
 }
+
+watch(
+    ()=>chooseImageVisible.value,
+    ()=>{
+      selectList.value = []
+    }
+)
+defineExpose({
+  editorFunc
+})
 </script>
 
 <style scoped lang="less">

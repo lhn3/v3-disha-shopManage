@@ -35,6 +35,9 @@ import DistributionSetting from "@/pages/DistributionModule/DistributionSetting/
 import Image from "@/pages/OtherModules/Image/Image.vue";
 import Notice from "@/pages/OtherModules/Notice/Notice.vue";
 
+
+// const routerList = import.meta.glob('./modules/*.js')
+
 export const routes = [
   {
     path: '/',
