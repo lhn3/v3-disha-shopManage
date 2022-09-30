@@ -73,7 +73,7 @@
                            v-if="state.dataForm.tab !== 'delete'">
             <template #default="{ row }">
               <el-button type="text" @click="editDrawer(row)">修改</el-button>
-              <el-button type="text">商品规格</el-button>
+              <el-button type="text" @click="openSkuDialog(row)">商品规格</el-button>
               <el-button type="text" @click="editBannerDrawer(row)">商品轮播图</el-button>
               <el-button type="text" @click="openDetailDialog(row)">商品详情</el-button>
               <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle([row.id])">删除</el-button>
@@ -158,6 +158,9 @@
 
 <!--  商品详情弹窗-->
   <GoodsDetail v-model="state.detailDialog" :detail="state.detail" @refresh="_table.getDataList"/>
+
+  <!--  商品规格弹窗-->
+  <GoodsSku v-model="state.skuDialog" :sku-obj="state.skuObj" @refresh="_table.getDataList"/>
 </template>
 
 <script setup>
@@ -167,6 +170,7 @@ import {nextTick, onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
 import ImageSelect from '@/components/ImageSelect.vue'
 import GoodsDetail from '@/pages/GoodManagement/Goods/cpns/GoodsDetail.vue'
+import GoodsSku from '@/pages/GoodManagement/Goods/cpns/GoodsSku.vue'
 
 const tabs = ref([
   {label: '全部', name: 'all'},
@@ -190,6 +194,8 @@ const state = reactive({
   bannerList: [],  //轮播图列表
   detailDialog: false, //商品详情弹窗
   detail: {}, //点击的商品详情
+  skuDialog: false, //商品详情弹窗
+  skuObj: {}, //点击的商品详情
   dataForm: { //搜索数据
     title: '',
     tab: 'all',
@@ -257,6 +263,16 @@ const openDetailDialog = row => {
   nextTick(()=>{
     state.detail = {content: row.content, id: row.id}
     state.detailDialog = true
+  })
+}
+
+//打开sku弹窗
+const openSkuDialog = row => {
+  state.skuObj = {}
+  console.log(row)
+  nextTick(()=>{
+    state.skuObj = {id: row.id, skuType: row.sku_type, skuValue: row.sku_value, goodsSkusCard: row.goods_skus_card}
+    state.skuDialog = true
   })
 }
 

@@ -21,8 +21,8 @@ const props = defineProps({
     default: false
   },
   detail: {
-    type: String,
-    default: ''
+    type: Object,
+    default: () => ({})
   }
 })
 const emit = defineEmits(['update:modelValue', 'refresh'])

@@ -1,5 +1,5 @@
 <template>
-  <div class="search" v-if="showSearch">
+  <div class="sub-search" v-if="showSearch">
     <div class="search-item">
       <slot name="search"/>
     </div>
@@ -8,7 +8,7 @@
       <el-button @click="emit('reset')">重置</el-button>
     </div>
   </div>
-  <div class="button" v-if="showButton">
+  <div class="sub-button" v-if="showButton">
     <div>
       <slot name="button"/>
     </div>
@@ -17,16 +17,22 @@
         <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="emit('refresh')"/>
       </el-tooltip>
       <div style="display: inline-block;margin-left: 10px" v-if="!!slots.search">
-        <el-button type="text" @click="showSearch = false" v-if="showSearch">收起&ensp;<el-icon><ArrowUp/></el-icon></el-button>
-        <el-button type="text" @click="showSearch = true" v-if="!showSearch">展开&ensp;<el-icon><ArrowDown/></el-icon></el-button>
+        <el-button type="text" @click="showSearch = false" v-if="showSearch">收起&ensp;<el-icon>
+          <ArrowUp/>
+        </el-icon>
+        </el-button>
+        <el-button type="text" @click="showSearch = true" v-if="!showSearch">展开&ensp;<el-icon>
+          <ArrowDown/>
+        </el-icon>
+        </el-button>
       </div>
     </div>
   </div>
-  <div class="table">
+  <div class="sub-table">
     <slot name="table"/>
   </div>
-  <div class="pagination">
-    <slot name="pagination" />
+  <div class="sub-pagination">
+    <slot name="pagination"/>
   </div>
 </template>
 
@@ -74,7 +80,7 @@ onMounted(() => {
 </script>
 
 <style scoped lang="less">
-.search {
+.sub-search {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
@@ -95,16 +101,16 @@ onMounted(() => {
     width: 140px;
   }
 }
-.button {
+.sub-button {
   display: flex;
   justify-content: space-between;
   padding-bottom: 10px;
 }
-.table {
+.sub-table {
   width: 100%;
   //transition: height 1s;
 }
-.pagination {
+.sub-pagination {
   margin-top: 10px;
   display: flex;
   justify-content: center;

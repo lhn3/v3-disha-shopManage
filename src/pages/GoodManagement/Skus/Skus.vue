@@ -43,7 +43,7 @@
       </el-form-item>
       <el-form-item prop="default" label="规格值：">
 <!--        <el-input placeholder="请输入" v-model="state.formData.default" clearable/>-->
-        <TagInput v-model="state.formData.default"   />
+        <TagInput v-model="state.formData.default" />
       </el-form-item>
       <el-form-item prop="order" label="排序：">
         <el-input-number v-model="state.formData.order" min="0" precision="0"/>
