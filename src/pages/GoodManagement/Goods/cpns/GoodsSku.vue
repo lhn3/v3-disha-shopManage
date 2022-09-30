@@ -66,7 +66,7 @@
                                 style="margin: 3px; cursor: pointer"
                                 :value="tag"
                                 :label="tag"
-                                @click="clickUnit(item, tag)"
+                                @click="handleSku(item, tag)"
                             >
                               {{ tag }}
                             </el-tag>
@@ -110,8 +110,8 @@
                   :ref="`inputRef${index}`"
                   v-model.trim="inputValue"
                   size="small"
-                  @keyup.enter="handleInputConfirm(item)"
-                  @blur="handleInputConfirm(item)"
+                  @keyup.enter="handleSku(item)"
+                  @blur="handleSku(item)"
                   style="width: 80px"
                   maxlength="10"
               />
@@ -196,8 +196,8 @@ watch(
     }
 )
 
+//获取sku列表
 const getSku = async () => {
-  //获取sku列表
   const res = await getSkuList()
   if (res.code !== 200) {
     loading.value = false
@@ -215,7 +215,6 @@ const getSku = async () => {
     }
   })
   activeName.value = skuList.value[0].name
-  console.log(skuList.value)
 }
 
 onActivated(async () => {
@@ -319,16 +318,16 @@ const showInput = index => {
   })
 }
 
-//新增sku值
-const handleInputConfirm = async item => {
-  if (inputValue.value) {
+//新增sku值,或选择某个sku
+const handleSku = async (item, value = null) => {
+  if (inputValue.value || value) {
     const res = await createGoodsMoreSkuValue({
       goods_skus_card_id: item.id,
       name: item.name,
       order: 50,
-      value: inputValue.value
+      value: value ? value : inputValue.value
     })
-    inputValue.value = ''
+    if (inputValue.value) inputValue.value = ''
     if (res.code !== 200) {
       return ElMessage({
         message: res.msg + '!',
@@ -341,27 +340,6 @@ const handleInputConfirm = async item => {
     ElMessage.success('添加成功~')
   }
   inputVisible.value = null
-}
-
-//选择了弹框的某个sku值
-const clickUnit = async (item, value) => {
-  console.log(value)
-  const res = await createGoodsMoreSkuValue({
-    goods_skus_card_id: item.id,
-    name: item.name,
-    order: 50,
-    value: value
-  })
-  if (res.code !== 200) {
-    return ElMessage({
-      message: res.msg + '!',
-      type: 'error',
-      dangerouslyUseHTMLString: true
-    })
-  }
-  item.goods_skus_card_value.push(res.data)
-  emit('refresh')
-  ElMessage.success('添加成功~')
 }
 
 //删除sku值
