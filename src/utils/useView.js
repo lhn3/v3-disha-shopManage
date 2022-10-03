@@ -28,6 +28,7 @@ class TableView {
     dataList: [], //获取到的分页数据
     ids: [],
     page: 1,
+    isPage: true, //是否分页
     limit: 10,
     total: 0
   })
@@ -47,16 +48,20 @@ class TableView {
     })
   }
 
-  //获取数据列表
+  /**
+   *
+   * @param isPage 是否分页
+   * @returns {Promise<unknown>}
+   */
   getDataList = async () => {
     let res = await myAxios.get({
-      url: `${this.tableInfo.url}/${this.tableInfo.page}`,
+      url: this.tableInfo.isPage ? `${this.tableInfo.url}/${this.tableInfo.page}` : this.tableInfo.url,
       data: {limit: this.tableInfo.limit, ...this.tableInfo.dataForm}
     })
     if (res.code !== 200) {
       return ElMessage.error(res.msg + '!')
     }
-    this.tableInfo.dataList = res.data.list
+    this.tableInfo.dataList = res.data.list ? res.data.list : res.data
     this.tableInfo.total = res.data.totalCount
     return new Promise(resolve => resolve(res))
   }

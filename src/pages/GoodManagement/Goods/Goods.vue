@@ -176,7 +176,6 @@ import ImageSelect from '@/components/ImageSelect.vue'
 import GoodsDetail from '@/pages/GoodManagement/Goods/cpns/GoodsDetail.vue'
 import GoodsSku from '@/pages/GoodManagement/Goods/cpns/GoodsSku.vue'
 import {messageBox} from "@/utils/message.js";
-import myAxios from "@/request/index.js";
 import {ElMessage} from "element-plus";
 
 const tabs = ref([
