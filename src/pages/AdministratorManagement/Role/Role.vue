@@ -102,7 +102,7 @@ let _table = new TableView(state)
 
 onMounted(async () => {
   _table.getDataList()
-  _table.getOtherInfo('/admin/rule')?.then(res => {
+  _table.getOtherInfo('/admin/rule/1')?.then(res => {
     state.rulesList = res.data.list
   })
 })

@@ -164,7 +164,7 @@ class TableView {
   //获取其他信息
   getOtherInfo = async (url) => {
     let res = await myAxios.get({
-      url: `${url}/1`,
+      url: url,
       data: {limit: 9999}
     })
     if (res.code !== 200) {

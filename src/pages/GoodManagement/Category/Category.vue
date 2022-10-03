@@ -43,18 +43,39 @@
     </el-dialog>
 
     <!--    推荐商品-->
-    <FormDrawer width="40%" v-model="state.drawer" :title="state.title" @handleClose="drawerClose"
-                @onSubmit="drawerSubmit" :loading="_table.tableInfo.loading" close-on-click-modal>
-      123
+    <FormDrawer width="40%" v-model="state.drawer" :title="state.title" :loading="_table.tableInfo.loading"
+                close-on-click-modal>
+      <el-button type="primary" style="margin-bottom: 20px" @click="state.contactVisible = true">添加关联</el-button>
+      <el-table height="calc(100vh - 220px)" border :data="state.tableList" style="width: 100%">
+        <el-table-column type="index" label="序号" header-align="center" align="center" min-width="50"/>
+        <el-table-column prop="id" label="ID" header-align="center" align="center" width="80"/>
+        <el-table-column label="商品" header-align="center" width="105">
+          <template #default="{ row }">
+            <el-image :src="row.cover" fit="cover" style="width: 80px;height: 80px;border-radius: 4px"/>
+          </template>
+        </el-table-column>
+        <el-table-column prop="name" label="商品名称" header-align="center" align="center" min-width="300"/>
+        <el-table-column label="操作" width="80" fixed="right" header-align="center" align="center">
+          <template #default="{ row }">
+            <el-button type="text" style="color: #f46c6c" @click="deleteRow(row)">删除</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
     </FormDrawer>
+
+    <GoodsDialog v-model="state.contactVisible" @handelSection="handelSection"/>
   </div>
 </template>
 
 <script setup>
 import FormDrawer from '@/components/FormDrawer.vue'
 import Search from '@/components/Search.vue'
+import GoodsDialog from './cpns/GoodsDialog.vue'
 import {onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
+import {deleteCategoryRow, addCategoryGoods} from '@/request/api/goodManagement.js'
+import {messageBox} from "@/utils/message.js";
+import {ElMessage} from "element-plus";
 
 const formRef = ref()
 const state = reactive({
@@ -67,6 +88,8 @@ const state = reactive({
   id: null, //修改的数据id
   dialogVisible: false,
   drawer: false,
+  contactVisible: false,
+  tableList: [],
   formData: { //新增修改数据
     name: ''
   },
@@ -101,19 +124,49 @@ const submit = () => {
   })
 }
 
-
 //打开推荐商品的抽屉
 const openDrawer = row => {
   state.title = '推荐商品'
   state.id = row.id
-  state.drawer = true
+  _table.getOtherInfo('/admin/app_category_item/list?category_id=' + state.id).then(res => {
+    state.tableList = res.data
+    state.drawer = true
+  })
 }
 
-const drawerClose = () => {
+//删除行
+const deleteRow = async row => {
+  messageBox('确认删除？').then(async r => {
+    if (!r) return
+    let res = await deleteCategoryRow(row.id)
+    if (res.code !== 200) {
+      return ElMessage({
+        message: res.msg + '!',
+        type: 'error',
+        dangerouslyUseHTMLString: true
+      })
+    }
+    ElMessage.success('删除成功~')
+    state.tableList = state.tableList.filter(item => item.id !== row.id)
+  })
 
 }
-const drawerSubmit = () => {
 
+//添加关联
+const handelSection = async data => {
+  let goods_ids = data.map(item => item.id)
+  let res = await addCategoryGoods({category_id: state.id, goods_ids})
+  if (res.code !== 200) {
+    return ElMessage({
+      message: res.msg + '!',
+      type: 'error',
+      dangerouslyUseHTMLString: true
+    })
+  }
+  ElMessage.success('关联成功~')
+  _table.getOtherInfo('/admin/app_category_item/list?category_id=' + state.id).then(r => {
+    state.tableList = r.data
+  })
 }
 </script>
 

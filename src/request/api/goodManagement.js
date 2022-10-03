@@ -4,7 +4,7 @@ import myAxios from '../index'
 export const updateGoodsDetail = (data) => {
   return myAxios.post({
     url: `/admin/goods/${data.id}`,
-    data : {content: data.content}
+    data: {content: data.content}
   })
 }
 
@@ -12,7 +12,7 @@ export const updateGoodsDetail = (data) => {
 export const updateGoodsSku = (data) => {
   return myAxios.post({
     url: `/admin/goods/updateskus/${data.id}`,
-    data : data
+    data: data
   })
 }
 
@@ -20,7 +20,7 @@ export const updateGoodsSku = (data) => {
 export const addGoodsMoreSku = (data) => {
   return myAxios.post({
     url: `/admin/goods_skus_card`,
-    data : data
+    data: data
   })
 }
 
@@ -28,7 +28,7 @@ export const addGoodsMoreSku = (data) => {
 export const updateGoodsMoreSkuName = (data) => {
   return myAxios.post({
     url: `/admin/goods_skus_card/${data.id}`,
-    data : data
+    data: data
   })
 }
 
@@ -67,5 +67,20 @@ export const getSkuList = () => {
   return myAxios.get({
     url: `/admin/skus/1`,
     data: {limit: 9999}
+  })
+}
+
+//分类推荐商品删除行
+export const deleteCategoryRow = (id) => {
+  return myAxios.post({
+    url: `/admin/app_category_item/${id}/delete`
+  })
+}
+
+//分类推荐商品关联添加
+export const addCategoryGoods = (data) => {
+  return myAxios.post({
+    url: `/admin/app_category_item`,
+    data
   })
 }
