@@ -189,7 +189,7 @@ class TableView {
         return
       }
       this.tableInfo.loading = false
-      ElMessage.success('修改成功~')
+      ElMessage.success('操作成功~')
       this.getDataList()
       resolve(true)
     })

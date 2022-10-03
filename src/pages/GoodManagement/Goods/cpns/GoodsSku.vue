@@ -59,7 +59,8 @@
                         </template>
                         <!--弹出规格框tab-->
                         <el-tabs v-model="activeName">
-                          <el-tab-pane :label="skuItem.name" :name="skuItem.name" v-for="skuItem in skuList" :key="skuItem.id">
+                          <el-tab-pane :label="skuItem.name" :name="skuItem.name" v-for="skuItem in skuList"
+                                       :key="skuItem.id">
                             <el-tag
                                 v-for="(tag, i) in skuItem.default"
                                 :key="i"
@@ -122,7 +123,60 @@
             </el-button>
           </div>
         </el-form-item>
+
+        <!--表格内容-->
         <el-form-item label="规格设置">
+          <el-table border :data="state.goodsSkusTable" style="width: 600px">
+            <el-table-column label="商品规格" header-align="center" align="center" min-width="200">
+              <el-table-column :label="item.name" header-align="center" align="center"
+                               v-for="(item,index) in state.goodsSkusTable[0].skus">
+                <template #default="{ row }">
+                  {{ row.skus[index]?.value }}
+                </template>
+              </el-table-column>
+            </el-table-column>
+            <el-table-column prop="sale_count" label="销售价" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input-number style="width: 100%" :controls="false" :precision="2" :min="0" v-model="row.pprice"
+                                 @blur="row.pprice ? '' : row.pprice = 0"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="status" label="市场价" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input-number style="width: 100%" :controls="false" :precision="2" :min="0" v-model="row.oprice"
+                                 @blur="row.oprice ? '' : row.oprice = 0"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="stock" label="成本价" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input-number style="width: 100%" :controls="false" :precision="2" :min="0" v-model="row.cprice"
+                                 @blur="row.cprice ? '' : row.cprice = 0"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="stock" label="库存" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input-number style="width: 100%" :controls="false" :precision="0" :min="0" v-model="row.stock"
+                                 @blur="row.stock ? '' : row.stock = 0"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="stock" label="体积" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input-number style="width: 100%" :controls="false" :precision="2" :min="0" v-model="row.weight"
+                                 @blur="row.weight ? '' : row.weight = 0"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="stock" label="重量" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input-number style="width: 100%" :controls="false" :precision="2" :min="0" v-model="row.volume"
+                                 @blur="row.volume ? '' : row.volume = 0"/>
+              </template>
+            </el-table-column>
+            <el-table-column prop="stock" label="编码" header-align="center" align="center" min-width="100">
+              <template #default="{ row }">
+                <el-input v-model="row.code" style="text-align: center;width: 100%"/>
+              </template>
+            </el-table-column>
+          </el-table>
         </el-form-item>
       </div>
     </el-form>
@@ -170,14 +224,15 @@ const {proxy} = getCurrentInstance()
 const state = reactive({
   id: null,
   skuType: 0,
-  skuValue: {
+  skuValue: { //单规格数据
     // oprice: '',
     // pprice: '',
     // cprice: '',
     // weight: '',
     // volume: ''
   },
-  goodsSkusCard: []
+  goodsSkusCard: [],  //多规格规格数据
+  goodsSkusTable: []  //多规格表格数据
 })
 
 watch(
@@ -188,6 +243,7 @@ watch(
         state.skuType = props.skuObj.skuType ? 1 : 0
         state.skuValue = props.skuObj.skuValue ? JSON.parse(JSON.stringify(props.skuObj.skuValue)) : {}
         state.goodsSkusCard = props.skuObj.goodsSkusCard ? JSON.parse(JSON.stringify(props.skuObj.goodsSkusCard)) : []
+        state.goodsSkusTable = props.skuObj.goodsSkusTable ? JSON.parse(JSON.stringify(props.skuObj.goodsSkusTable)) : []
       }
     },
     {
@@ -359,7 +415,11 @@ const delSku = async (item, index) => {
 
 const submit = async () => {
   loading.value = true
-  const res = await updateGoodsSku({id: state.id, sku_type: state.skuType, sku_value: state.skuValue})
+  const res = await updateGoodsSku({
+    id: state.id,
+    sku_type: state.skuType,
+    sku_value: state.skuValue
+  })
   if (res.code !== 200) {
     loading.value = false
     return ElMessage({

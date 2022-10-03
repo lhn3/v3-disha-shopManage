@@ -26,8 +26,12 @@
         <el-button type="warning" @click="_table.changeStatus(0)" plain
                    v-if="['all','saling'].includes(state.dataForm.tab)">下架
         </el-button>
-        <el-button type="success" v-if="['delete'].includes(state.dataForm.tab)">恢复商品</el-button>
-        <el-button type="warning" v-if="['delete'].includes(state.dataForm.tab)">彻底删除</el-button>
+        <el-button type="success" v-if="['delete'].includes(state.dataForm.tab)"
+                   @click="changeGoods('恢复', '/admin/goods/restore')">恢复商品
+        </el-button>
+        <el-button type="warning" v-if="['delete'].includes(state.dataForm.tab)"
+                   @click="changeGoods('彻底删除', '/admin/goods/destroy')">彻底删除
+        </el-button>
       </template>
 
       <template #table>
@@ -156,7 +160,7 @@
     <ImageSelect v-model="state.bannerList" multiple/>
   </FormDrawer>
 
-<!--  商品详情弹窗-->
+  <!--  商品详情弹窗-->
   <GoodsDetail v-model="state.detailDialog" :detail="state.detail" @refresh="_table.getDataList"/>
 
   <!--  商品规格弹窗-->
@@ -171,6 +175,9 @@ import TableView from "@/utils/useView.js";
 import ImageSelect from '@/components/ImageSelect.vue'
 import GoodsDetail from '@/pages/GoodManagement/Goods/cpns/GoodsDetail.vue'
 import GoodsSku from '@/pages/GoodManagement/Goods/cpns/GoodsSku.vue'
+import {messageBox} from "@/utils/message.js";
+import myAxios from "@/request/index.js";
+import {ElMessage} from "element-plus";
 
 const tabs = ref([
   {label: '全部', name: 'all'},
@@ -217,7 +224,7 @@ const state = reactive({
   },
   rules: {
     title: {required: true, message: '请输入必填项', trigger: 'blur'},
-    category_id: {required: true, message: '请选择必填项', trigger: ['blur', 'change']},
+    category_id: {required: true, message: '请选择必填项', trigger: 'blur'},
     unit: {required: true, message: '请选择必填项', trigger: 'blur'},
     stock: {required: true, message: '请输入必填项', trigger: 'blur'},
     min_stock: {required: true, message: '请输入必填项', trigger: 'blur'},
@@ -260,7 +267,7 @@ const bannerDrawerClose = () => {
 //打开商品详情弹窗
 const openDetailDialog = row => {
   state.detail = {}
-  nextTick(()=>{
+  nextTick(() => {
     state.detail = {content: row.content, id: row.id}
     state.detailDialog = true
   })
@@ -270,8 +277,14 @@ const openDetailDialog = row => {
 const openSkuDialog = row => {
   state.skuObj = {}
   console.log(row)
-  nextTick(()=>{
-    state.skuObj = {id: row.id, skuType: row.sku_type, skuValue: row.sku_value, goodsSkusCard: row.goods_skus_card}
+  nextTick(() => {
+    state.skuObj = {
+      id: row.id,
+      skuType: row.sku_type,
+      skuValue: row.sku_value,
+      goodsSkusCard: row.goods_skus_card,
+      goodsSkusTable: row.goods_skus
+    }
     state.skuDialog = true
   })
 }
@@ -334,6 +347,17 @@ const bannerDrawerSubmit = () => {
     if (res) bannerDrawerClose()
   })
 }
+
+//批量恢复和批量彻底删除商品
+const changeGoods = (message, url) => {
+  let ids = _table.tableInfo.ids
+  if (ids.length === 0) return ElMessage.error(`请先选择要${message}的商品！`)
+  messageBox(`确认${message}？`).then(async r => {
+    if (!r) return
+    _table.updateOther(url, {ids})
+  })
+}
+
 </script>
 
 <style scoped lang="less">
