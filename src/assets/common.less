@@ -1,7 +1,6 @@
 .el-message {
   min-width: 350px !important;
 }
-
 //全局进度条样式
 #nprogress {
   .bar {
@@ -10,7 +9,6 @@
       box-shadow: 0 0 10px #42b983, 0 0 5px #42b983;
     }
   }
-
   .spinner {
     .spinner-icon {
       border-top-color: #42b983;
@@ -18,7 +16,6 @@
     }
   }
 }
-
 //一行显示
 .text-ellipsis {
   overflow: hidden;
@@ -30,27 +27,25 @@
   -webkit-box-orient: vertical;
   white-space: normal;
 }
-
 //全局滚动条样式
 ::-webkit-scrollbar {
-  background-color: #f4f4f4!important;
-  height: 3px!important;
-  width: 6px!important;
+  background-color: #f4f4f4 !important;
+  height: 3px !important;
+  width: 6px !important;
 }
 ::-webkit-scrollbar-corner {
-  width: 4px!important;
-  height: 6px!important;
+  width: 4px !important;
+  height: 6px !important;
 }
 ::-webkit-scrollbar-thumb {
   border-radius: 8px;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
 }
-::-webkit-scrollbar-track{
+::-webkit-scrollbar-track {
   border-right-color: transparent;
   border-left-color: transparent;
-  background-color: rgba(0,0,0,0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
-
 //表格头部样式
 .el-table thead {
   color: #303133 !important;
@@ -58,20 +53,20 @@
     background-color: #f5f7fa !important;
   }
 }
-
 //数字输入框控件样式修复
 .el-input-number__decrease, .el-input-number__increase {
   top: 2px !important;
   bottom: 2px !important;
 }
-
 //button取消hover,focus,active
 .el-button:hover, .el-button:active, .el-button:focus {
   color: var(--el-button-text-color);
   border-color: var(--el-button-border-color);
   background-color: var(--el-button-bg-color);
 }
-
+.el-input__inner {
+  text-align: left !important;
+}
 //弹出框样式
 .custom-dialog {
   display: flex;
@@ -129,4 +124,17 @@
       min-width: 76px;
     }
   }
+}
+
+//单位方块
+.unit-tip {
+  min-width: 32px;
+  padding: 0 10px;
+  height: 32px;
+  background-color: #e5e5e5;
+  border-radius: 3px;
+  text-align: center;
+  line-height: 32px;
+  margin-left: 5px;
+  color: #8e8e8e;
 }

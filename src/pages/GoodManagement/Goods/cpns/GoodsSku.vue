@@ -13,31 +13,31 @@
           <el-input-number :controls="false" :min="0" :precision="2" v-model="state.skuValue.oprice"
                            style="width: 200px"
                            placeholder="请输入"/>
-          <div class="tip">元</div>
+          <div class="unit-tip">元</div>
         </el-form-item>
         <el-form-item label="销售价格">
           <el-input-number :controls="false" :min="0" :precision="2" v-model="state.skuValue.pprice"
                            style="width: 200px"
                            placeholder="请输入"/>
-          <div class="tip">元</div>
+          <div class="unit-tip">元</div>
         </el-form-item>
         <el-form-item label="成本价格">
           <el-input-number :controls="false" :min="0" :precision="2" v-model="state.skuValue.cprice"
                            style="width: 200px"
                            placeholder="请输入"/>
-          <div class="tip">元</div>
+          <div class="unit-tip">元</div>
         </el-form-item>
         <el-form-item label="商品重量">
           <el-input-number :controls="false" :min="0" :precision="2" v-model="state.skuValue.weight"
                            style="width: 200px"
                            placeholder="请输入"/>
-          <div class="tip">kg</div>
+          <div class="unit-tip">kg</div>
         </el-form-item>
         <el-form-item label="商品体积">
           <el-input-number :controls="false" :min="0" :precision="2" v-model="state.skuValue.volume"
                            style="width: 200px"
                            placeholder="请输入"/>
-          <div class="tip">m²</div>
+          <div class="unit-tip">m²</div>
         </el-form-item>
       </div>
 
@@ -437,16 +437,6 @@ const submit = async () => {
 </script>
 
 <style scoped lang="less">
-.tip {
-  width: 30px;
-  height: 30px;
-  background-color: #e5e5e5;
-  border-radius: 3px;
-  text-align: center;
-  line-height: 30px;
-  margin-left: 5px;
-  color: #8e8e8e;
-}
 :deep(.el-card__header), :deep(.el-card__body) {
   width: 600px;
   padding: 10px;

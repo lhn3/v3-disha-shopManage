@@ -9,7 +9,7 @@
       </template>
 
       <template #table>
-        <el-table ref="tableRef" height="calc(62vh - 100px)" border :data="_table.tableInfo.dataList"
+        <el-table ref="tableRef" height="calc(78vh - 240px)" border :data="_table.tableInfo.dataList"
                   style="width: 100%" @selection-change="selectHandel">
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column prop="title" label="商品" header-align="center" width="320px">

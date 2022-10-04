@@ -67,19 +67,19 @@
       <el-form-item prop="value" label="面值：">
         <el-input-number :controls="false" min="0" precision="2" v-model="state.formData.value"
                          placeholder="请输入" clearable/>
-        <div class="tip">
+        <div class="unit-tip">
           {{ state.formData.type ? '折' : '元' }}
         </div>
       </el-form-item>
       <el-form-item prop="total" label="发行量：">
         <el-input-number min="0" precision="0" v-model="state.formData.total"
                          placeholder="请输入" clearable/>
-        <div class="tip">张</div>
+        <div class="unit-tip">张</div>
       </el-form-item>
       <el-form-item prop="min_price" label="最低使用价格：">
         <el-input-number :controls="false" v-model="state.formData.min_price" placeholder="请输入" min="0"
                          precision="2" clearable/>
-        <div class="tip">元</div>
+        <div class="unit-tip">元</div>
       </el-form-item>
       <el-form-item prop="end_time" label="时间范围：">
         <el-date-picker
@@ -261,15 +261,5 @@ const drawerSubmit = () => {
     background-color: #ffeeee;
     color: #ff6a6a;
   }
-}
-.tip {
-  width: 30px;
-  height: 30px;
-  background-color: #cccccc;
-  border-radius: 3px;
-  text-align: center;
-  line-height: 30px;
-  margin-left: 5px;
-  color: #767676;
 }
 </style>

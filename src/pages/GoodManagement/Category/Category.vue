@@ -63,6 +63,7 @@
       </el-table>
     </FormDrawer>
 
+<!--    选择商品的弹窗-->
     <GoodsDialog v-model="state.contactVisible" @handelSection="handelSection"/>
   </div>
 </template>
