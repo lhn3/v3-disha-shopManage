@@ -66,8 +66,7 @@
         <el-input v-model.trim="state.formData.username" placeholder="请输入用户名" clearable/>
       </el-form-item>
       <el-form-item prop="password" label="密码：">
-        <el-input type="password" placeholder="请输入密码" v-model="state.formData.password"
-                  maxlength="200" show-word-limit :rows="5" clearable/>
+        <el-input type="password" placeholder="请输入密码" v-model="state.formData.password" maxlength="18" clearable/>
       </el-form-item>
       <el-form-item prop="avatar" label="头像：">
         <ImageSelect v-model="state.formData.avatar"/>
