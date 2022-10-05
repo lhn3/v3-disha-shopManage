@@ -363,46 +363,4 @@ const changeGoods = (message, url) => {
 .goods {
   padding: 20px;
 }
-.avatar {
-  width: 150px;
-  height: 150px;
-  border: 1px dashed #c3c4c8;
-  border-radius: 6px;
-}
-.avatarPlus {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #f6f5f5;
-  font-size: 34px;
-  color: #aaaaaa;
-  cursor: pointer;
-}
-.avatarPlus:hover {
-  background-color: #ececec;
-  color: #807f7f;
-}
-.avatarControl {
-  position: relative;
-  overflow: hidden;
-  .cover {
-    width: 150px;
-    height: 150px;
-    position: absolute;
-    top: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.5);
-    font-size: 24px;
-    display: none;
-    justify-content: space-around;
-    align-items: center;
-    color: #ffffff;
-    padding: 0 20px;
-  }
-}
-.avatarControl:hover {
-  .cover {
-    display: flex;
-  }
-}
 </style>
