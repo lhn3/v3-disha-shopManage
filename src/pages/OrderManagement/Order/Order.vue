@@ -46,7 +46,7 @@
 
       <template #table>
         <el-table height="calc(100vh - 424px)" border :data="_table.tableInfo.dataList" style="width: 100%"
-                  @selection-change="_table.selectHandel" stripe>
+                  @selection-change="_table.selectHandel" stripe @row-dblclick="openDetail">
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column label="商品" min-width="270px">
             <template #default="{ row }">
@@ -97,10 +97,14 @@
           </el-table-column>
           <el-table-column label="操作" fixed="right" width="100px" header-align="center" align="center">
             <template #default="{ row }">
-              <el-button type="text" style="margin-left: 10px">订单详情</el-button>
-              <el-button v-if="state.dataForm.tab === 'noship'" type="text">订单发货</el-button>
-              <el-button v-if="state.dataForm.tab === 'refunding'" type="text">同意退款</el-button>
-              <el-button v-if="state.dataForm.tab === 'refunding'" type="text">拒绝退款</el-button>
+              <el-button type="text" style="margin-left: 10px" @click="openDetail(row)">订单详情</el-button>
+<!--              <el-button v-if="state.dataForm.tab === 'noship'" type="text">订单发货</el-button>-->
+              <el-button v-if="state.dataForm.tab === 'refunding'" type="text" @click="refundClick(row,1)">
+                同意退款
+              </el-button>
+              <el-button v-if="state.dataForm.tab === 'refunding'" type="text" @click="refundClick(row,0)">
+                拒绝退款
+              </el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -118,17 +122,21 @@
     </Search>
 
     <!--导出弹窗-->
-    <ExportOrder v-model="state.exportDialog" :tabs="tabs" />
+    <ExportOrder v-model="state.exportDialog" :tabs="tabs"/>
+
+    <!--订单详情-->
+    <OrderDetail v-model="state.detailDialog" :rowDetail="state.rowDetail"/>
   </div>
 </template>
 
 <script setup>
 import Search from '@/components/Search.vue'
 import ExportOrder from './cpns/ExportOrder.vue'
+import OrderDetail from './cpns/OrderDetail.vue'
 import {onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
+import {ElMessageBox} from "element-plus";
 import {messageBox} from "@/utils/message.js";
-import {ElMessage} from "element-plus";
 
 const tabs = ref([
   {label: '全部', name: 'all'},
@@ -146,10 +154,9 @@ const state = reactive({
   deleteUrl: '/admin/order',
   addUrl: '/admin/order',
   updateUrl: '/admin/order',
-  // title: '', //抽屉标题
-  // id: null, //修改的数据id
-  // drawer: false,  //抽屉显示隐藏
   exportDialog: false, //导出弹窗
+  detailDialog: false, //详情弹窗
+  rowDetail: {}, //详情弹窗
   dataForm: { //搜索数据
     tab: 'all',
     no: '',
@@ -176,16 +183,29 @@ const reset = () => {
   _table.search()
 }
 
-//批量恢复和批量彻底删除商品
-const changeGoods = (message, url) => {
-  let ids = _table.tableInfo.ids
-  if (ids.length === 0) return ElMessage.error(`请先选择要${message}的商品！`)
-  messageBox(`确认${message}？`).then(async r => {
-    if (!r) return
-    _table.updateOther(url, {ids})
-  })
+//打开订单详情弹出窗
+const openDetail = row => {
+  state.rowDetail = {}
+  state.detailDialog = true
+  state.rowDetail = row
 }
 
+//订单同意/拒绝退款
+const refundClick = (row, agree) => {
+  if (agree) {
+    messageBox('确认同意退款？').then(async r => {
+      if (!r) return
+      _table.updateOther(`/admin/order/${row.id}/handle_refund`, {agree})
+    })
+  } else {
+    ElMessageBox.prompt('请输入拒绝理由', '拒绝退款', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消'
+    }).then(({ value }) => {
+      _table.updateOther(`/admin/order/${row.id}/handle_refund`, {agree, disagree_reason: value})
+    })
+  }
+}
 </script>
 
 <style scoped lang="less">

@@ -5,7 +5,7 @@
       :title="props.title"
       direction="rtl"
       :close-on-click-modal="props.closeOnClickModal"
-      :before-close="props.cancel"
+      :before-close="cancel"
       :size="props.width"
       :destroy-on-close="props.destroyOnClose"
       :close-on-press-escape="props.closeOnPressEscape"

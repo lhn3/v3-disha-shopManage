@@ -69,7 +69,7 @@ const cancel = () => {
   emit('update:modelValue')
 }
 
-//提交
+//确定导出
 const submit = () => {
   formRef.value.validate(async isValid => {
     if (!isValid) return
