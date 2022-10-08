@@ -1,5 +1,5 @@
 <template>
-  <div class="baseSetting">
+  <div class="buySetting">
     <el-tabs v-model="activeName">
       <el-form ref="formRef" :model="state.formInline" :rules="state.rules" label-width="100px">
         <el-tab-pane label="支付设置" name="payment">
@@ -96,8 +96,6 @@ const state = reactive({
   }
 })
 
-const formInline = reactive({})
-
 const getInfo = async () => {
   let res = await getBaseSetting()
   if (res.code !== 200) {
@@ -127,7 +125,7 @@ const submit = () => {
   formRef.value.validate(async isValid => {
     if (!isValid) return
     state.loading = true
-    let res = await setBaseSetting(formInline)
+    let res = await setBaseSetting(state.formInline)
     if (res.code !== 200) {
       ElMessage({
         message: res.msg + '!',
@@ -146,7 +144,7 @@ const submit = () => {
 </script>
 
 <style scoped lang="less">
-.baseSetting {
+.buySetting {
   padding: 20px;
 }
 </style>
