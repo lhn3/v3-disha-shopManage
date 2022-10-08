@@ -48,11 +48,6 @@ class TableView {
     })
   }
 
-  /**
-   *
-   * @param isPage 是否分页
-   * @returns {Promise<unknown>}
-   */
   getDataList = async () => {
     let res = await myAxios.get({
       url: this.tableInfo.isPage ? `${this.tableInfo.url}/${this.tableInfo.page}` : this.tableInfo.url,
