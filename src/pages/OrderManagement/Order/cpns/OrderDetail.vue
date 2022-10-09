@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="props.modelValue" v-if="props.rowDetail" title="订单详情" custom-class="custom-dialog" draggable
+  <el-dialog :model-value="props.modelValue" v-if="props.rowDetail" title="订单详情" custom-class="custom-dialog" draggable
              @close="cancel">
     <el-card class="card">
       <template #header>

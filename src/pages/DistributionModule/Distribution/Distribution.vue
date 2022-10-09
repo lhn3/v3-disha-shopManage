@@ -5,9 +5,9 @@
         <el-col :span="6" v-for="(item,index) in state.panels" :key="item.label">
           <el-card shadow="hover" style="cursor: pointer;border: none">
             <div class="cart-main">
-              <div :class="item.color" class="cart-left">
+              <div class="cart-left" :style="{backgroundColor: icons[index].bgc}">
                 <el-icon :size="25" color="#FFFFFF">
-                  <component :is="icons[index]"></component>
+                  <component :is="icons[index].icon"></component>
                 </el-icon>
               </div>
               <div class="cart-right">
@@ -24,14 +24,15 @@
       <Search @reset="reset" @search="_table.search" @refresh="_table.getDataList">
         <template #search>
           <el-form-item label="关键词：">
-            <el-input placeholder="手机号/邮箱/用户昵称" v-model="state.dataForm.keyword" clearable style="width: 200px;"/>
+            <el-input placeholder="手机号/邮箱/用户昵称" v-model="state.dataForm.keyword" clearable
+                      style="width: 200px;"/>
           </el-form-item>
-<!--          <el-form-item label="用户类型：">-->
-<!--            <el-input placeholder="请输入" v-model="state.dataForm.name" clearable style="width: 200px;"/>-->
-<!--          </el-form-item>-->
-<!--          <el-form-item label="推广人：">-->
-<!--            <el-input placeholder="请输入" v-model="state.dataForm.phone" clearable style="width: 200px;"/>-->
-<!--          </el-form-item>-->
+          <!--          <el-form-item label="用户类型：">-->
+          <!--            <el-input placeholder="请输入" v-model="state.dataForm.name" clearable style="width: 200px;"/>-->
+          <!--          </el-form-item>-->
+          <!--          <el-form-item label="推广人：">-->
+          <!--            <el-input placeholder="请输入" v-model="state.dataForm.phone" clearable style="width: 200px;"/>-->
+          <!--          </el-form-item>-->
           <el-form-item label="开始时间：">
             <el-date-picker
                 v-model="state.dataForm.starttime"
@@ -67,7 +68,7 @@
         </template>
 
         <template #table>
-          <el-table height="calc(100vh - 434px)" border :data="_table.tableInfo.dataList" style="width: 100%" stripe>
+          <el-table height="calc(100vh - 434px)" border :data="_table.tableInfo.dataList" style="width: 100%">
             <el-table-column prop="id" label="ID" min-width="60" align="center"/>
             <el-table-column label="头像" width="80" align="center" header-align="center">
               <template #default="{ row }">
@@ -96,16 +97,15 @@
                              header-align="center"/>
             <el-table-column label="操作" fixed="right" width="160px" header-align="center" align="center">
               <template #default="{ row }">
-                <el-button type="text" style="margin-left: 10px" @click="openDetail(row)">推广人</el-button>
-                <el-button type="text" style="margin-left: 10px" @click="openDetail(row)">推广订单</el-button>
+                <el-button type="text" style="margin-left: 10px" @click="openPromoter(row,'promoter')">推广人</el-button>
+                <el-button type="text" style="margin-left: 10px" @click="openPromoter(row,'order')">推广订单</el-button>
               </template>
             </el-table-column>
           </el-table>
         </template>
 
         <template #pagination>
-          <el-pagination class="pagination"
-                         background
+          <el-pagination background
                          :current-page="_table.tableInfo.page"
                          :page-size="_table.tableInfo.limit"
                          :total="_table.tableInfo.total"
@@ -113,8 +113,10 @@
                          @current-change="_table.pageCurrentChangeHandle"/>
         </template>
       </Search>
-
     </div>
+
+    <!--推广人弹窗-->
+    <PromoterDialog v-model="state.promoterVisiable" :info="state.promoterInfo"/>
   </div>
 </template>
 
@@ -124,9 +126,14 @@ import {onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
 import {getDistribution} from '@/request/api/DistributionModule.js'
 import {ElMessage} from "element-plus";
+import PromoterDialog from './cpns/PromoterDialog.vue'
 
 const formRef = ref()
-const icons = ['Van', 'ShoppingCartFull', 'Wallet', 'Odometer']
+const icons = [
+  {icon: 'Van', bgc: '#60a5fa'},
+  {icon: 'ShoppingCartFull', bgc: '#fb923c'},
+  {icon: 'Wallet', bgc: '#34d399'},
+  {icon: 'Odometer', bgc: '#818cf8'}]
 const tags = [
   {text: '全部', value: 'all'},
   {text: '今天', value: 'today'},
@@ -143,6 +150,8 @@ const state = reactive({
   id: null, //修改的数据id
   drawer: false,  //抽屉显示隐藏
   panels: [], //顶部卡片信息
+  promoterVisiable: false, //推广人弹窗
+  promoterInfo: {},
   dataForm: { //搜索数据
     type: 'all',
     keyword: '',
@@ -184,6 +193,12 @@ const reset = () => {
   state.dataForm.starttime = undefined
   state.dataForm.endtime = undefined
   _table.getDataList()
+}
+
+//打开推广人弹窗
+const openPromoter = (row, type) => {
+  state.promoterInfo = {id: row.id, type}
+  state.promoterVisiable = true
 }
 
 onMounted(async () => {

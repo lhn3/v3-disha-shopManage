@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="props.modelValue" title="导出订单" width="30%" draggable @close="cancel">
+  <el-dialog :model-value="props.modelValue" title="导出订单" width="30%" draggable @close="cancel">
     <el-form v-if="props.modelValue" ref="formRef" :model="state.formData" :rules="state.rules" label-width="100px">
       <el-form-item prop="tab" label="订单类型">
         <el-select v-model="state.formData.tab" placeholder="请选择" filterable clearable>
