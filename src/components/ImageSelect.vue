@@ -41,6 +41,7 @@
 import {ref, defineProps, defineExpose, watch} from "vue";
 import Image from '@/pages/OtherModules/Image/Image.vue'
 import {Refresh, Plus, ZoomIn, Delete} from '@element-plus/icons-vue'
+import {ElMessage} from "element-plus";
 
 const props = defineProps({
   modelValue: {
@@ -52,8 +53,12 @@ const props = defineProps({
     default: false
   },
   show: {
-    type:Boolean,
+    type: Boolean,
     default: true
+  },
+  limit: {
+    type: Number,
+    default: 9
   }
 })
 const emit = defineEmits(['update:modelValue'])
@@ -81,6 +86,7 @@ const chooseImage = urlList => {
 //选择多图片
 const chooseImages = () => {
   if (props.show) {
+    if ((props.modelValue.length + selectList.value.length) > props.limit) return ElMessage.error(`最多只能添加${props.limit}张图片`)
     emit('update:modelValue', [...props.modelValue, ...selectList.value])
   } else {
     //提交才执行回调
@@ -91,7 +97,7 @@ const chooseImages = () => {
 
 //删除头像
 const imageDelete = index => {
-  let newList = props.modelValue.filter((item,i) => {
+  let newList = props.modelValue.filter((item, i) => {
     return i !== index
   })
   emit('update:modelValue', newList)
@@ -105,8 +111,8 @@ const editorFunc = func => {
 }
 
 watch(
-    ()=>chooseImageVisible.value,
-    ()=>{
+    () => chooseImageVisible.value,
+    () => {
       selectList.value = []
     }
 )
