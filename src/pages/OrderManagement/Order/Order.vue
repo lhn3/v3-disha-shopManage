@@ -4,7 +4,7 @@
       <el-tab-pane :label="item.label" :name="item.name" v-for="item in tabs" :key="item.name"/>
     </el-tabs>
 
-    <Search @reset="reset" @search="_table.search" @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @reset="reset" @search="_table.search" @refresh="_table.getDataList" :subtract-height="54">
       <template #search>
         <el-form-item label="订单号：">
           <el-input placeholder="请输入" v-model="state.dataForm.no" clearable style="width: 200px;"/>
@@ -45,7 +45,7 @@
       </template>
 
       <template #table>
-        <el-table height="calc(100vh - 424px)" border :data="_table.tableInfo.dataList" style="width: 100%"
+        <el-table :height="tableHeight" border :data="_table.tableInfo.dataList" style="width: 100%"
                   @selection-change="_table.selectHandel" stripe @row-dblclick="openDetail">
           <el-table-column type="selection" width="50" align="center"/>
           <el-table-column label="商品" min-width="270px">
@@ -149,6 +149,7 @@ const tabs = ref([
   {label: '退款中', name: 'refunding'},
 ])
 const formRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url: '/admin/order',
   deleteUrl: '/admin/order',

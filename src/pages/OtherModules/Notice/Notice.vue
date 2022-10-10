@@ -1,30 +1,35 @@
 <template>
   <div class="notice">
-    <Search @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @refresh="_table.getDataList">
       <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
       </template>
-    </Search>
 
-    <el-table height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" border style="width: 100%"
-              @cell-dblclick="editDrawer">
-      <el-table-column prop="title" label="公告标题" header-align="center" align="center"/>
-      <el-table-column prop="content" label="公告内容" header-align="center" align="center"/>
-      <el-table-column prop="update_time" label="发布时间" header-align="center" align="center"/>
-      <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-button type="text" @click="editDrawer(row)">修改</el-button>
-          <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination class="pagination"
-                   background
-                   :current-page="_table.tableInfo.page"
-                   :page-size="_table.tableInfo.limit"
-                   :total="_table.tableInfo.total"
-                   layout="prev, pager, next"
-                   @current-change="_table.pageCurrentChangeHandle"/>
+      <template #table>
+        <el-table :height="tableHeight" :data="_table.tableInfo.dataList" border style="width: 100%"
+                  @cell-dblclick="editDrawer">
+          <el-table-column prop="title" label="公告标题" header-align="center" align="center"/>
+          <el-table-column prop="content" label="公告内容" header-align="center" align="center"/>
+          <el-table-column prop="update_time" label="发布时间" header-align="center" align="center"/>
+          <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-button type="text" @click="editDrawer(row)">修改</el-button>
+              <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+
+      <template #pagination>
+        <el-pagination class="pagination"
+                       background
+                       :current-page="_table.tableInfo.page"
+                       :page-size="_table.tableInfo.limit"
+                       :total="_table.tableInfo.total"
+                       layout="prev, pager, next"
+                       @current-change="_table.pageCurrentChangeHandle"/>
+      </template>
+    </Search>
   </div>
   <!--  分类抽屉-->
   <FormDrawer v-model="state.drawer" :title="state.title" :loading="_table.tableInfo.loading" @handleClose="drawerClose"
@@ -48,6 +53,7 @@ import {onMounted, reactive, ref} from "vue";
 import TableView from '@/utils/useView.js'
 
 const formRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url:'/admin/notice',
   deleteUrl: '/admin/notice',

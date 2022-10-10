@@ -1,13 +1,13 @@
 <template>
   <div class="category">
-    <Search @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @refresh="_table.getDataList">
       <template #button>
         <el-button type="primary" @click="openDialog">新增</el-button>
       </template>
     </Search>
 
     <el-tree
-        style="height: calc(100vh - 240px);overflow: scroll;overflow-x: hidden"
+        :style="{height: tableHeight,overflow: 'scroll',overflowX: 'hidden'}"
         :data="_table.tableInfo.dataList"
         node-key="id"
         expand-on-click-node
@@ -79,6 +79,7 @@ import {messageBox} from "@/utils/message.js";
 import {ElMessage} from "element-plus";
 
 const formRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url: '/admin/category',
   deleteUrl: '/admin/category',

@@ -1,38 +1,42 @@
 <template>
   <div class="skus">
-    <Search @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @refresh="_table.getDataList">
       <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
         <el-button type="danger" @click="_table.deleteHandle">批量删除</el-button>
       </template>
-    </Search>
+      <template #table>
+        <el-table ref="tableRef" :height="tableHeight" :data="_table.tableInfo.dataList" border style="width: 100%"
+                  @cell-dblclick="editDrawer" @selection-change="_table.selectHandel">
+          <el-table-column type="selection" width="50" align="center" />
+          <el-table-column prop="name" label="规格名称" header-align="center" align="center"/>
+          <el-table-column prop="default" label="规格值" header-align="center" align="center"/>
+          <el-table-column prop="order" label="排序" header-align="center" align="center"/>
+          <el-table-column prop="status" label="状态" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-switch v-model="row.status" :active-value="1" :inactive-value="0"
+                         @change="(value) => _table.changeStatus(value, row.id)"/>
+            </template>
+          </el-table-column>
+          <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-button type="text" @click="editDrawer(row)">修改</el-button>
+              <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle([row.id])">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </template>
+      <template #pagination>
+        <el-pagination class="pagination"
+                       background
+                       :current-page="_table.tableInfo.page"
+                       :page-size="_table.tableInfo.limit"
+                       :total="_table.tableInfo.total"
+                       layout="prev, pager, next"
+                       @current-change="_table.pageCurrentChangeHandle"/>
 
-    <el-table ref="tableRef" height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" border style="width: 100%"
-              @cell-dblclick="editDrawer" @selection-change="_table.selectHandel">
-      <el-table-column type="selection" width="50" align="center" />
-      <el-table-column prop="name" label="规格名称" header-align="center" align="center"/>
-      <el-table-column prop="default" label="规格值" header-align="center" align="center"/>
-      <el-table-column prop="order" label="排序" header-align="center" align="center"/>
-      <el-table-column prop="status" label="状态" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-switch v-model="row.status" :active-value="1" :inactive-value="0"
-                     @change="(value) => _table.changeStatus(value, row.id)"/>
-        </template>
-      </el-table-column>
-      <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-button type="text" @click="editDrawer(row)">修改</el-button>
-          <el-button type="text" style="color: #f46c6c" @click="_table.deleteHandle([row.id])">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination class="pagination"
-                   background
-                   :current-page="_table.tableInfo.page"
-                   :page-size="_table.tableInfo.limit"
-                   :total="_table.tableInfo.total"
-                   layout="prev, pager, next"
-                   @current-change="_table.pageCurrentChangeHandle"/>
+      </template>
+    </Search>
   </div>
   <!--  分类抽屉-->
   <FormDrawer destroyOnClose v-model="state.drawer" :title="state.title" :loading="_table.tableInfo.loading" @handleClose="drawerClose"
@@ -64,6 +68,7 @@ import TagInput from '@/components/TagInput.vue'
 
 const formRef = ref()
 const tableRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url:'/admin/skus',
   deleteUrl: '/admin/skus',

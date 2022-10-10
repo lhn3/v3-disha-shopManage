@@ -1,11 +1,11 @@
 <template>
   <div class="level">
-    <Search @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @refresh="_table.getDataList">
       <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
       </template>
       <template #table>
-        <el-table ref="tableRef" height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" border
+        <el-table ref="tableRef" :height="tableHeight" :data="_table.tableInfo.dataList" border
                   style="width: 100%" @cell-dblclick="editDrawer">
           <el-table-column prop="name" label="会员等级" header-align="center" align="center"/>
           <el-table-column label="折扣率" header-align="center" align="center">
@@ -81,6 +81,7 @@ import TableView from '@/utils/useView.js'
 
 const formRef = ref()
 const tableRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url: '/admin/user_level',
   deleteUrl: '/admin/user_level',

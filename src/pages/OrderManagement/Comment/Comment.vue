@@ -1,6 +1,6 @@
 <template>
   <div class="comment">
-    <Search @reset="_table.reset" @search="_table.search" @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @reset="_table.reset" @search="_table.search" @refresh="_table.getDataList">
       <template #search>
         <el-form-item label="商品名称：">
           <el-input placeholder="请输入" v-model="state.dataForm.title" clearable style="width: 200px;"/>
@@ -10,7 +10,7 @@
       <template #button/>
 
       <template #table>
-        <el-table height="calc(100vh - 320px)" border :data="_table.tableInfo.dataList" style="width: 100%">
+        <el-table :height="tableHeight" border :data="_table.tableInfo.dataList" style="width: 100%">
           <el-table-column type="expand" width="50">
             <template #default="{ row }">
               <div class="comment-info">
@@ -100,6 +100,7 @@ import {onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
 
 const formRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url: '/admin/goods_comment',
   deleteUrl: '/admin/goods_comment',

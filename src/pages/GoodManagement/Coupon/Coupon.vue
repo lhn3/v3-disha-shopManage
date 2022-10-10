@@ -1,54 +1,59 @@
 <template>
   <div class="coupon">
-    <Search @refresh="_table.getDataList">
+    <Search  v-model="tableHeight" @refresh="_table.getDataList">
       <template #button>
         <el-button type="primary" @click="openDrawer">新增</el-button>
         <el-button type="danger" @click="_table.deleteHandle">批量删除</el-button>
       </template>
+      <template #table>
+        <el-table :height="tableHeight" :data="_table.tableInfo.dataList" style="width: 100%">
+          <el-table-column label="优惠券名称" header-align="center" width="370px">
+            <template #default="{ row }">
+              <div class="coupon-cart" :class="{'active-coupon': formatStatus(row) === '进行中'}">
+                <div class="coupon-cart-name">{{ row.name }}</div>
+                <div class="coupon-cart-time">{{ row.start_time }} ~ {{ row.end_time }}</div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column prop="status" label="状态" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-tag size="large" v-if="formatStatus(row) === '已失效'" type="info">已失效</el-tag>
+              <el-tag size="large" v-if="formatStatus(row) === '未开始'">未开始</el-tag>
+              <el-tag size="large" v-if="formatStatus(row) === '进行中'" type="success">进行中</el-tag>
+              <el-tag size="large" v-if="formatStatus(row) === '已结束'" type="warning">已结束</el-tag>
+            </template>
+          </el-table-column>
+          <el-table-column label="优惠" header-align="center" align="center">
+            <template #default="{ row }">
+              {{ row.type === 0 ? `满减：￥${row.value}` : `折扣：${row.value}折` }}
+            </template>
+          </el-table-column>
+          <el-table-column prop="total" label="发放数量" header-align="center" align="center"/>
+          <el-table-column prop="used" label="已使用" header-align="center" align="center"/>
+          <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
+            <template #default="{ row }">
+              <el-button type="text" v-if="formatStatus(row) === '未开始'" @click="editDrawer(row)">修改</el-button>
+              <el-button type="text"
+                         v-if="formatStatus(row) !== '进行中'" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">
+                删除
+              </el-button>
+              <el-button type="text" v-if="formatStatus(row) === '进行中'" @click="changeStatus(row.id)">失效</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+
+      </template>
+      <template #pagination>
+        <el-pagination class="pagination"
+                       background
+                       :current-page="_table.tableInfo.page"
+                       :page-size="_table.tableInfo.limit"
+                       :total="_table.tableInfo.total"
+                       layout="prev, pager, next"
+                       @current-change="_table.pageCurrentChangeHandle"/>
+      </template>
     </Search>
 
-    <el-table height="calc(100vh - 270px)" :data="_table.tableInfo.dataList" style="width: 100%">
-      <el-table-column label="优惠券名称" header-align="center" width="370px">
-        <template #default="{ row }">
-          <div class="coupon-cart" :class="{'active-coupon': formatStatus(row) === '进行中'}">
-            <div class="coupon-cart-name">{{ row.name }}</div>
-            <div class="coupon-cart-time">{{ row.start_time }} ~ {{ row.end_time }}</div>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column prop="status" label="状态" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-tag size="large" v-if="formatStatus(row) === '已失效'" type="info">已失效</el-tag>
-          <el-tag size="large" v-if="formatStatus(row) === '未开始'">未开始</el-tag>
-          <el-tag size="large" v-if="formatStatus(row) === '进行中'" type="success">进行中</el-tag>
-          <el-tag size="large" v-if="formatStatus(row) === '已结束'" type="warning">已结束</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="优惠" header-align="center" align="center">
-        <template #default="{ row }">
-          {{ row.type === 0 ? `满减：￥${row.value}` : `折扣：${row.value}折` }}
-        </template>
-      </el-table-column>
-      <el-table-column prop="total" label="发放数量" header-align="center" align="center"/>
-      <el-table-column prop="used" label="已使用" header-align="center" align="center"/>
-      <el-table-column label="操作" fixed="right" width="150px" header-align="center" align="center">
-        <template #default="{ row }">
-          <el-button type="text" v-if="formatStatus(row) === '未开始'" @click="editDrawer(row)">修改</el-button>
-          <el-button type="text"
-                     v-if="formatStatus(row) !== '进行中'" style="color: #f46c6c" @click="_table.deleteHandle(row.id)">
-            删除
-          </el-button>
-          <el-button type="text" v-if="formatStatus(row) === '进行中'" @click="changeStatus(row.id)">失效</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-    <el-pagination class="pagination"
-                   background
-                   :current-page="_table.tableInfo.page"
-                   :page-size="_table.tableInfo.limit"
-                   :total="_table.tableInfo.total"
-                   layout="prev, pager, next"
-                   @current-change="_table.pageCurrentChangeHandle"/>
   </div>
   <!--  分类抽屉-->
   <FormDrawer width="35%" v-model="state.drawer" :title="state.title" :loading="_table.tableInfo.loading"
@@ -111,6 +116,7 @@ import TableView from '@/utils/useView.js'
 import {messageBox} from "@/utils/message.js";
 
 const formRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url: '/admin/coupon',
   deleteUrl: '/admin/coupon',

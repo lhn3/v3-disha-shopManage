@@ -1,81 +1,112 @@
 <template>
-  <div class="sub-search" v-if="showSearch">
-    <div class="search-item">
-      <slot name="search"/>
-    </div>
-    <div class="search-btn">
-      <el-button type="primary" @click="emit('search')">搜索</el-button>
-      <el-button @click="emit('reset')">重置</el-button>
-    </div>
-  </div>
-  <div class="sub-button" v-if="showButton">
-    <div>
-      <slot name="button"/>
-    </div>
-    <div>
-      <el-tooltip effect="dark" content="刷新" placement="top-start">
-        <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="emit('refresh')"/>
-      </el-tooltip>
-      <div style="display: inline-block;margin-left: 10px" v-if="!!slots.search">
-        <el-button type="text" @click="showSearch = false" v-if="showSearch">收起&ensp;<el-icon>
-          <ArrowUp/>
-        </el-icon>
-        </el-button>
-        <el-button type="text" @click="showSearch = true" v-if="!showSearch">展开&ensp;<el-icon>
-          <ArrowDown/>
-        </el-icon>
-        </el-button>
+  <div>
+    <el-collapse-transition>
+      <div ref="searchRef" v-show="showSearch">
+        <div class="sub-search">
+          <div class="search-item">
+            <slot name="search"/>
+          </div>
+          <div class="search-btn">
+            <el-button type="primary" @click="emit('search')">搜索</el-button>
+            <el-button @click="emit('reset')">重置</el-button>
+          </div>
+        </div>
+      </div>
+    </el-collapse-transition>
+    <div ref="btnRef" class="sub-button" v-show="showButton">
+      <div>
+        <slot name="button"/>
+      </div>
+      <div>
+        <el-tooltip effect="dark" content="刷新" placement="top-start">
+          <el-button type="text" style="font-size: 16px" :icon="Refresh" @click="emit('refresh')"/>
+        </el-tooltip>
+        <div style="display: inline-block;margin-left: 10px" v-if="!!slots.search">
+          <el-button type="text" @click="showSearch = false" v-if="showSearch">收起&ensp;<el-icon>
+            <ArrowUp/>
+          </el-icon>
+          </el-button>
+          <el-button type="text" @click="showSearch = true" v-if="!showSearch">展开&ensp;<el-icon>
+            <ArrowDown/>
+          </el-icon>
+          </el-button>
+        </div>
       </div>
     </div>
-  </div>
-  <div class="sub-table">
-    <slot name="table"/>
-  </div>
-  <div class="sub-pagination">
-    <slot name="pagination"/>
+    <div class="sub-table">
+      <slot name="table"/>
+    </div>
+    <div ref="pagRef" class="sub-pagination">
+      <slot name="pagination"/>
+    </div>
   </div>
 </template>
 
 <script setup>
-import {defineEmits, onMounted, ref, useSlots, watch, defineProps} from "vue";
+import {defineEmits, onMounted, ref, useSlots, watch, defineProps, nextTick} from "vue";
 import {Refresh} from '@element-plus/icons-vue'
+import {useResizeObserver} from '@vueuse/core'
 
 const props = defineProps({
-  modelValue: String
+  modelValue: {
+    type: String,
+    default: ''
+  },
+  subtractHeight: {
+    type: Number,
+    default: 0
+  }
 })
-const emit = defineEmits(['reset', 'search', 'refresh'])
+const emit = defineEmits(['reset', 'search', 'refresh', 'update:modelValue'])
 const slots = useSlots()
-const showSearch = ref(true)
-const showButton = ref(true)
-// const tableHeight = ref(0)
+const showSearch = ref(false)
+const showButton = ref(false)
+
+const searchRef = ref()
+const btnRef = ref()
+const pagRef = ref()
+
+const searchHeight = ref(0)
+const otherHeight = ref(0) //除了表格的高度
+const tableHeights = ref(0) //除了表格的高度
+
+// 计算表格高度
+const calculation = () => {
+  // height: calc(100vh - 182px);啥也没有也要减去182
+
+  searchHeight.value = searchRef.value.offsetHeight //记录搜索高度
+  otherHeight.value  = searchRef.value.offsetHeight + btnRef.value.offsetHeight + pagRef.value.offsetHeight
+  tableHeights.value = `calc(100vh - 182px - ${otherHeight.value}px - ${props.subtractHeight}px)`
+  console.log(tableHeights.value)
+  emit('update:modelValue', tableHeights.value)
+}
 
 onMounted(() => {
   showSearch.value = !!slots.search
   showButton.value = !!slots.button
-  // height: calc(100vh - 374px);
 
-  //计算表格高度
-  // if (showButton.value) {
-  //   tableHeight.value = 'calc(100vh - 320px)'
-  //   emit('update:modelValue', tableHeight.value)
-  // } else {
-  //   tableHeight.value = 'calc(100vh - 270px)'
-  //   emit('update:modelValue', tableHeight.value)
-  // }
+  // 计算表格高度
+  nextTick(() => {
+    calculation()
+  })
 })
 
-// watch(
-//     () => showSearch.value,
-//     newValue => {
-//       if (newValue) {
-//         tableHeight.value = 'calc(100vh - 320px)'
-//         emit('update:modelValue', tableHeight.value)
-//       } else {
-//         tableHeight.value = 'calc(100vh - 270px)'
-//         emit('update:modelValue', tableHeight.value)
-//       }
-//     }
-// )
+watch(
+    () => showSearch.value,
+    newValue => {
+      if (newValue) {
+        otherHeight.value += searchHeight.value
+      } else {
+        otherHeight.value -= searchHeight.value
+      }
+      console.log(otherHeight.value)
+    }
+)
+
+//改变页面大小
+useResizeObserver(searchRef, () => {
+  calculation()
+})
 
 </script>
 
@@ -84,7 +115,6 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  transition: all 1s;
   .search-item {
     display: flex;
     flex-wrap: wrap;
@@ -108,7 +138,6 @@ onMounted(() => {
 }
 .sub-table {
   width: 100%;
-  //transition: height 1s;
 }
 .sub-pagination {
   margin-top: 10px;

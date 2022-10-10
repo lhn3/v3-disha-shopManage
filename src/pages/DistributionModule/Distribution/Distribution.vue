@@ -21,18 +21,12 @@
     </div>
 
     <div class="main-table">
-      <Search @reset="reset" @search="_table.search" @refresh="_table.getDataList">
+      <Search v-model="tableHeight" @reset="reset" @search="_table.search" @refresh="_table.getDataList" :subtract-height="120">
         <template #search>
           <el-form-item label="关键词：">
             <el-input placeholder="手机号/邮箱/用户昵称" v-model="state.dataForm.keyword" clearable
                       style="width: 200px;"/>
           </el-form-item>
-          <!--          <el-form-item label="用户类型：">-->
-          <!--            <el-input placeholder="请输入" v-model="state.dataForm.name" clearable style="width: 200px;"/>-->
-          <!--          </el-form-item>-->
-          <!--          <el-form-item label="推广人：">-->
-          <!--            <el-input placeholder="请输入" v-model="state.dataForm.phone" clearable style="width: 200px;"/>-->
-          <!--          </el-form-item>-->
           <el-form-item label="开始时间：">
             <el-date-picker
                 v-model="state.dataForm.starttime"
@@ -68,7 +62,7 @@
         </template>
 
         <template #table>
-          <el-table height="calc(100vh - 434px)" border :data="_table.tableInfo.dataList" style="width: 100%">
+          <el-table :height="tableHeight" border :data="_table.tableInfo.dataList" style="width: 100%">
             <el-table-column prop="id" label="ID" min-width="60" align="center"/>
             <el-table-column label="头像" width="80" align="center" header-align="center">
               <template #default="{ row }">
@@ -129,6 +123,7 @@ import {ElMessage} from "element-plus";
 import PromoterDialog from './cpns/PromoterDialog.vue'
 
 const formRef = ref()
+const tableHeight = ref()
 const icons = [
   {icon: 'Van', bgc: '#60a5fa'},
   {icon: 'ShoppingCartFull', bgc: '#fb923c'},

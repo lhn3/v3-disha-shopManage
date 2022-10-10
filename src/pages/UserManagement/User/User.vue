@@ -1,6 +1,6 @@
 <template>
   <div class="user">
-    <Search @reset="_table.reset" @search="_table.search" @refresh="_table.getDataList">
+    <Search v-model="tableHeight" @reset="_table.reset" @search="_table.search" @refresh="_table.getDataList">
       <template #search>
         <el-form-item label="关键词：">
           <el-input placeholder="手机号/邮箱/用户昵称" v-model="state.dataForm.keyword" clearable
@@ -23,7 +23,7 @@
       </template>
 
       <template #table>
-        <el-table height="calc(100vh - 320px)" :data="_table.tableInfo.dataList" border style="width: 100%">
+        <el-table :height="tableHeight" :data="_table.tableInfo.dataList" border style="width: 100%">
           <el-table-column label="会员" header-align="center" min-width="200">
             <template #default="{ row }">
               <div style="display: flex;padding: 5px">
@@ -119,6 +119,7 @@ import {onMounted, reactive, ref} from "vue";
 import TableView from "@/utils/useView.js";
 
 const formRef = ref()
+const tableHeight = ref()
 const state = reactive({
   url: '/admin/user',
   deleteUrl: '/admin/user',
